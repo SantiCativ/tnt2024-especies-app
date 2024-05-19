@@ -1,5 +1,6 @@
 export async function getEspecies() {
-  const response = await fetch("http://localhost:3000/especies");
+  const response = await fetch("http://192.168.1.19:3000/especies");
+  // para el celu: http://192.168.1.19:3000/especies
   if (!response.ok) {
     throw new Error("HTTP error, status = " + response.status);
   }

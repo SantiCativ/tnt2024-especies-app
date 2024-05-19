@@ -15,6 +15,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 export default function HomeScreen() {
   const [isFetching, setIsFetching] = useState(false);
   const [isError, setIsError] = useState(false);
+  //arreglo de Especies Home, inicialmente vacio.
   const [especiesFiltradas, setEspeciesFiltradas] = useState<EspecieHome[]>([]);
   const especiesRef = useRef<EspecieHome[]>([]);
 
@@ -54,7 +55,7 @@ export default function HomeScreen() {
       <Text style={styles.title}>Home</Text>
 
       <Pressable onPress={handleRemoveFilter}>
-        <Text>Todos</Text>
+        <Text>Todess</Text>
       </Pressable>
       <Pressable onPress={handleFilter(TReinoEnum.ANIMALIA)}>
         <Text>Animalia</Text>
@@ -68,7 +69,7 @@ export default function HomeScreen() {
 
       {isFetching && <Text>Cargando...</Text>}
       {isError && (
-        <Text style={{ color: "red" }}>Error al cargar las especies</Text>
+        <Text style={{ color: "red" }}>Error al cargar las especies, prueba de vuelta</Text>
       )}
 
       <FlatList
