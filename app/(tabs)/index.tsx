@@ -1,109 +1,102 @@
+import { EspecieList } from "@/src/components/EspecieList";
+import { HomeFilter } from "@/src/components/HomeFilter";
+import { TextNunitoSans } from "@/src/components/TextNunitoSans";
+import { useFilteredEspecies } from "@/src/services/especies.hooks";
+import { TReino, TReinoEnum } from "@/src/services/especies.service";
+import { themeColors, themeStyles } from "@/src/theme/theme";
+import { useState } from "react";
 import {
-  EspecieHome,
-  preparaEspeciesParaHome,
-} from "@/src/adapters/homeAdapters";
-import {
-  TReino,
-  TReinoEnum,
-  getEspecies,
-} from "@/src/services/especies.service";
-import { Image } from "expo-image";
-import { Link } from "expo-router";
-import { useEffect, useState, useRef } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+  Button,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 export default function HomeScreen() {
-  const [isFetching, setIsFetching] = useState(false);
-  const [isError, setIsError] = useState(false);
-  //arreglo de Especies Home, inicialmente vacio.
-  const [especiesFiltradas, setEspeciesFiltradas] = useState<EspecieHome[]>([]);
-  const especiesRef = useRef<EspecieHome[]>([]);
+  const [filter, setFilter] = useState<TReino | null>(null);
 
-  useEffect(() => {
-    fetchEspecies();
-  }, []);
+  const {
+    data: especies, // renombro data a especies
+    isFetching,
+    isError,
+    refetch,
+  } = useFilteredEspecies(filter);
 
-  const fetchEspecies = async () => {
-    setIsFetching(true);
-    setIsError(false);
-    try {
-      const espciesFromApi = await getEspecies();
-      especiesRef.current = preparaEspeciesParaHome(espciesFromApi);
-      setEspeciesFiltradas(especiesRef.current);
-    } catch (error) {
-      setIsError(true);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
+  //
+  // Event handlers
+  //
   const handleRemoveFilter = () => {
-    setEspeciesFiltradas(especiesRef.current);
+    setFilter(null);
   };
 
+  // función que recibe un parámetro y retorna otra la definición de otra función
   const handleFilter = (reino: TReino) => () => {
-    const newEspecies = especiesRef.current.filter(
-      (especie) => especie.reino === reino
-    );
-    setEspeciesFiltradas(newEspecies);
+    setFilter(reino);
   };
 
-  console.log("HomeScreen render");
+  const handleReintentar = () => {
+    // solo ejecuta refetch si refetch no es falsy
+    refetch?.();
+  };
 
+  //
+  // Render
+  //
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
+    <SafeAreaView style={themeStyles.screen}>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <TextNunitoSans style={styles.title}>Home</TextNunitoSans>
+          <View style={styles.filtersContainer}>
+            <Pressable onPress={handleRemoveFilter}>
+              <HomeFilter filter={filter} name={null} />
+            </Pressable>
+            <Pressable onPress={handleFilter(TReinoEnum.ANIMALIA)}>
+              <HomeFilter filter={filter} name={TReinoEnum.ANIMALIA} />
+            </Pressable>
+            <Pressable onPress={handleFilter(TReinoEnum.FUNGI)}>
+              <HomeFilter filter={filter} name={TReinoEnum.FUNGI} />
+            </Pressable>
+            <Pressable onPress={handleFilter(TReinoEnum.PLANTAE)}>
+              <HomeFilter filter={filter} name={TReinoEnum.PLANTAE} />
+            </Pressable>
+          </View>
+        </View>
 
-      <Pressable onPress={handleRemoveFilter}>
-        <Text>Todess</Text>
-      </Pressable>
-      <Pressable onPress={handleFilter(TReinoEnum.ANIMALIA)}>
-        <Text>Animalia</Text>
-      </Pressable>
-      <Pressable onPress={handleFilter(TReinoEnum.PLANTAE)}>
-        <Text>Fungi</Text>
-      </Pressable>
-      <Pressable onPress={handleFilter(TReinoEnum.FUNGI)}>
-        <Text>Plantae</Text>
-      </Pressable>
-
-      {isFetching && <Text>Cargando...</Text>}
-      {isError && (
-        <Text style={{ color: "red" }}>Error al cargar las especies, prueba de vuelta</Text>
-      )}
-
-      <FlatList
-        style={{ maxHeight: 300 }}
-        keyExtractor={(item) => item.sp_id.toString()}
-        data={especiesFiltradas}
-        renderItem={({ item }) => (
-          <View key={item.sp_id}>
-            <Image
-              source={{ uri: item.imagen }}
-              style={{ width: 50, height: 50 }}
-            />
-            <Text>{item.nombre_cientifico}</Text>
+        {isFetching && <TextNunitoSans>Cargando...</TextNunitoSans>}
+        {!isFetching && isError && (
+          <View>
+            <TextNunitoSans style={styles.textError}>
+              Error al cargar las especies
+            </TextNunitoSans>
+            <Button title="Reintentar" onPress={handleReintentar} />
           </View>
         )}
-      />
-
-      <Pressable onPress={fetchEspecies}>
-        <Text>Recargar</Text>
-      </Pressable>
-      <Link href="/especie/1">To Especie show</Link>
-    </View>
+        <EspecieList especies={especies} />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 25,
+    gap: 10,
+  },
+  filtersContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 20,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    color: themeColors.textBase,
+  },
+  titleContainer: { gap: 35 },
+  textError: {
+    color: "red",
   },
 });

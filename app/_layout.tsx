@@ -1,20 +1,22 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { EspecieProvider } from "@/src/context/especies.context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import { useColorScheme } from "react-native";
 
+// Seteamos la ruta inicial
 export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+// Creamos una instancia de QueryClient, "configuración global de de Tanstack Query"
+const queryClient = new QueryClient();
 
+// Layout principal de la aplicación
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    // Proveedor de Tanstack Query
+    <QueryClientProvider client={queryClient}>
+      {/* Navegación principal, dos Stacks: (tabs) y la pantalla de detalle de una especie */}
+      {/* Seguir en app/(tabs)/_layout ¿Por qué? Porque la ruta inicial arriba en "unstable_settings" */}
       <Stack>
         {/* Stack.Screnn lo agrega a la pila a la pantalla */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -23,6 +25,6 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
       </Stack>
-    </ThemeProvider>
+    </QueryClientProvider>
   );
 }
