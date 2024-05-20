@@ -16,6 +16,8 @@ import {
 export default function HomeScreen() {
   const [filter, setFilter] = useState<TReino | null>(null);
 
+  
+
   const {
     data: especies, // renombro data a especies
     isFetching,
@@ -47,9 +49,9 @@ export default function HomeScreen() {
     <SafeAreaView style={themeStyles.screen}>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
-          <TextNunitoSans style={styles.title}>Home</TextNunitoSans>
+          <TextNunitoSans style={styles.title}>Hola Usuario</TextNunitoSans>
           <View style={styles.filtersContainer}>
-            <Pressable onPress={handleRemoveFilter}>
+            <Pressable onPress={handleRemoveFilter} >
               <HomeFilter filter={filter} name={null} />
             </Pressable>
             <Pressable onPress={handleFilter(TReinoEnum.ANIMALIA)}>
@@ -73,6 +75,11 @@ export default function HomeScreen() {
             <Button title="Reintentar" onPress={handleReintentar} />
           </View>
         )}
+        
+        <TextNunitoSans style={styles.textError}>
+              
+            </TextNunitoSans>
+        
         <EspecieList especies={especies} />
       </View>
     </SafeAreaView>

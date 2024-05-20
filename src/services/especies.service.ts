@@ -1,17 +1,11 @@
 import axios from "axios";
 
 export async function getEspecies() {
-  // const response = await fetch("http://192.168.1.19:3000/especies");
-  // // para el celu: http://192.168.1.19:3000/especies
-  // if (!response.ok) {
-  //   throw new Error("HTTP error, status = " + response.status);
-  // }
-  // const data: TEspecie[] = await response.json();
-  // return data;
   const response = await axios.get<TEspecie[]>(
     // toma el valor de .env.local
     // resulta en http://localhost:3000/especies
-    `${process.env.EXPO_PUBLIC_API_URL}/especies`
+     `${process.env.EXPO_PUBLIC_API_URL}/especies`
+    // "http://192.168.1.19:3000/especies"
   );
   return response.data;
 }

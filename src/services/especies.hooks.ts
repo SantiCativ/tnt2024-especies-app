@@ -53,7 +53,7 @@ export function useEspecie(spId: number) {
       }
     );
   };
-  return useEspecies(selectorAdapter) as DefinedUseQueryResult<TEspecie, Error>;
+  return useEspecies(selectorAdapter) as DefinedUseQueryResult<TEspecie[], Error>;
 }
 
 export function useFilteredEspecies(reino: null | TReino) {
