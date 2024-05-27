@@ -1,36 +1,45 @@
 import React from "react";
-import { FlatList, Image, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { EspecieHome } from "../adapters/homeAdapters";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
-import { themeColors } from "@/src/theme/theme";
+import { useNavigation } from "@react-navigation/native";
 
 //COMPONENTE CARD
 //Aca recibe como accesorio el especie, el cual tiene que ir tipado sino da error
 //basicamente una funcion que recibe el detalle de solo una especie y juega con sus datos para devolverve
 //su respectiva card
 const EspecieCard: React.FC<{ especie: EspecieHome }> = ({ especie }) => {
+  const navigation = useNavigation();
   return (
-    <View style={styles.card}>
-      <Image
+    <TouchableOpacity onPress={() => navigation.navigate('especie/' + especieId)}>
+      <View style={styles.card}>
+        <Image
         //aca debo manejar el camino si la imagen es nula, debido al tipado que hicimos en especieHome
-        source={
-          especie.imagen
-            ? { uri: especie.imagen }
-            : require("@/assets/images/placeholder.png") //si la imagen es nula muestro una de imagen estatica default
-        }
-        style={styles.cardImage}
-      />
+          source={
+            especie.imagen
+              ? { uri: especie.imagen }
+              : require("@/assets/images/placeholder.png")  //si la imagen es nula muestro una de imagen estatica default
+          }
+          style={styles.cardImage}
+        />
 
-      {especie.imagen ? (
-        <TextNunitoSans style={styles.cardText} numberOfLines={1}>
-          {especie.nombre_cientifico }
-        </TextNunitoSans>
-      ) : (
-        <TextNunitoSans style={styles.cardText} >
-          especie sin imagen
-        </TextNunitoSans>
-      )}
-    </View>
+        {especie.imagen ? (
+          <TextNunitoSans style={styles.cardText} numberOfLines={1}>
+            {especie.nombre_cientifico}
+          </TextNunitoSans>
+        ) : (
+          <TextNunitoSans style={styles.cardText}>
+            Especie sin imagen
+          </TextNunitoSans>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 };
 
