@@ -9,6 +9,7 @@ import {
 import { EspecieHome } from "../adapters/homeAdapters";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useNavigation } from "@react-navigation/native";
+import { Link } from "expo-router";
 
 //COMPONENTE CARD
 //Aca recibe como accesorio el especie, el cual tiene que ir tipado sino da error
@@ -17,29 +18,37 @@ import { useNavigation } from "@react-navigation/native";
 const EspecieCard: React.FC<{ especie: EspecieHome }> = ({ especie }) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('especie/' + especieId)}>
-      <View style={styles.card}>
-        <Image
+    //<TouchableOpacity onPress={() => navigation.navigate('/especie/[especieId]',{params:{especieId:especie.sp_id}})}>
+    <Link
+        href={{
+          pathname: "/especie/[especieId]",
+          params: { especieId: especie.sp_id }
+        }}>
+          
+        
+    <View style={styles.card}>
+      <Image
         //aca debo manejar el camino si la imagen es nula, debido al tipado que hicimos en especieHome
-          source={
-            especie.imagen
-              ? { uri: especie.imagen }
-              : require("@/assets/images/placeholder.png")  //si la imagen es nula muestro una de imagen estatica default
-          }
-          style={styles.cardImage}
-        />
+        source={
+          especie.imagen
+            ? { uri: especie.imagen }
+            : require("@/assets/images/placeholder.png") //si la imagen es nula muestro una de imagen estatica default
+        }
+        style={styles.cardImage}
+      />
 
-        {especie.imagen ? (
-          <TextNunitoSans style={styles.cardText} numberOfLines={1}>
-            {especie.nombre_cientifico}
-          </TextNunitoSans>
-        ) : (
-          <TextNunitoSans style={styles.cardText}>
-            Especie sin imagen
-          </TextNunitoSans>
-        )}
-      </View>
-    </TouchableOpacity>
+      {especie.imagen ? (
+        <TextNunitoSans style={styles.cardText} numberOfLines={1}>
+          {especie.nombre_cientifico}
+        </TextNunitoSans>
+      ) : (
+        <TextNunitoSans style={styles.cardText}>
+          Especie sin imagen
+        </TextNunitoSans>
+      )}
+    </View>
+    
+    </Link>
   );
 };
 

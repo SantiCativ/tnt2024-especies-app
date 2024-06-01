@@ -5,7 +5,6 @@ export async function getEspecies() {
     // toma el valor de .env.local
     // resulta en http://localhost:3000/especies
      `${process.env.EXPO_PUBLIC_API_URL}/especies`
-    // "http://192.168.1.19:3000/especies"
   );
   return response.data;
 }
