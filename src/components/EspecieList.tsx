@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { FlatList, Image, StyleSheet, View, Pressable } from "react-native";
 import { EspecieHome } from "../adapters/homeAdapters";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
-import { useNavigation } from "@react-navigation/native";
 import { Link } from "expo-router";
 
 //COMPONENTE CARD
@@ -16,16 +9,7 @@ import { Link } from "expo-router";
 //basicamente una funcion que recibe el detalle de solo una especie y juega con sus datos para devolverve
 //su respectiva card
 const EspecieCard: React.FC<{ especie: EspecieHome }> = ({ especie }) => {
-  const navigation = useNavigation();
   return (
-    //<TouchableOpacity onPress={() => navigation.navigate('/especie/[especieId]',{params:{especieId:especie.sp_id}})}>
-    <Link
-        href={{
-          pathname: "/especie/[especieId]",
-          params: { especieId: especie.sp_id }
-        }}>
-          
-        
     <View style={styles.card}>
       <Image
         //aca debo manejar el camino si la imagen es nula, debido al tipado que hicimos en especieHome
@@ -47,8 +31,6 @@ const EspecieCard: React.FC<{ especie: EspecieHome }> = ({ especie }) => {
         </TextNunitoSans>
       )}
     </View>
-    
-    </Link>
   );
 };
 
@@ -61,7 +43,18 @@ export const EspecieList: React.FC<{ especies: EspecieHome[] }> = ({
     <FlatList
       data={especies}
       renderItem={({ item }) => (
-        <EspecieCard key={item.sp_id.toString()} especie={item} />
+        <Link
+          href={{
+            pathname: "/especie/[especieId]",
+            params: { especieId: item.sp_id },
+          }}
+           asChild //esta propiedad permite que a los componentes hijos no lo tome como una etiqueta <a> sino como una unidad direccionable
+        >
+          {/* Meto Pressable para que me tome el link en android */}
+          <Pressable>
+            <EspecieCard key={item.sp_id.toString()} especie={item} />
+          </Pressable>
+        </Link>
       )}
       keyExtractor={(item) => item.sp_id.toString()}
       numColumns={2}
