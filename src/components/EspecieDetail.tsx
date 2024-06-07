@@ -1,29 +1,13 @@
 import { TEspecie } from "../services/especies.service";
-import { Pressable, View, StyleSheet } from "react-native";
+import { View, StyleSheet,Dimensions } from "react-native";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
-import { Link } from "expo-router";
+import { Boton } from "./BotonReportar";
 
-export const Boton = () => {
-  return (
-    <Link
-      href={{
-        pathname: "/report",
-      }}
-      asChild
-    >
-      <Pressable style={styles.ContainerBoton}>
-        <View style={styles.botton}>
-          <TextNunitoSans>Reportar Avistaje</TextNunitoSans>
-        </View>
-      </Pressable>
-    </Link>
-  );
-};
 export const Encabezado = () => {
   return (
     <View style={styles.td}>
       <TextNunitoSans style={{ color: "#BEDE61", fontSize: 12 }}>
-        Id
+        ID
       </TextNunitoSans>
       <TextNunitoSans style={{ color: "#BEDE61", fontSize: 12 }}>
         Reino
@@ -90,25 +74,18 @@ export const EspecieDetail: React.FC<{ especie: TEspecie }> = ({ especie }) => {
 };
 
 const styles = StyleSheet.create({
-  ContainerDetail: {},
+  ContainerDetail: {
+    height: Dimensions.get('window').height/2,
+    top:-20,
+    backgroundColor: "black",
+    margin:15,
+    borderRadius:20
+  },
   ContainerTable: {
     flexDirection: "row",
-    gap: 5,
-    margin: 30,
-    backgroundColor: "#13140D",
+    gap: 15,
+    padding:50
   },
-  td: {},
-  tr: {},
-  ContainerBoton: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  botton: {
-    width: 173,
-    height: 46,
-    borderRadius: 30,
-    backgroundColor: "#BEDE61",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  td: { gap: 15 },
+  tr: {gap:15},
 });

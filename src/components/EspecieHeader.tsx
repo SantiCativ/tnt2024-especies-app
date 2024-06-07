@@ -4,11 +4,14 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
+  Pressable,
+  Dimensions,
 } from "react-native";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 
 export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
   const navigation = useNavigation();
@@ -22,13 +25,15 @@ export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
       resizeMode="cover"
       style={styles.image}
     >
-      <View style={styles.IconBackContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+      
+        <View style={styles.IconBackContainer}>
           <View style={styles.IconBackCircleContainer}>
-            <Ionicons name="chevron-back-outline" size={40} color="black" />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back-outline" size={30} color="black" />
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
+        </View>
+     
 
       <View style={styles.absoluteContainer}>
         <View style={styles.IconLikeContainer}>
@@ -39,30 +44,48 @@ export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
         </View>
       </View>
 
-      <View style={styles.textContainer}>
-        <TextNunitoSans style={styles.text}>
-          {" "}
-          {especie.nombre_cientifico}
-        </TextNunitoSans>
-      </View>
+      <LinearGradient
+        start={{ x: 0.5, y: 1 }}
+        end={{ x: 0.5, y: 0 }}
+        colors={["rgba(48,49,45,1)", "rgba(48,49,45,0.9)", "rgba(30,31,24,0)"]}
+        locations={[0, 0.34, 0.9]}
+        style={styles.linearGradient}
+      >
+        <View style={styles.textContainer}>
+          <TextNunitoSans style={styles.text}>
+            {especie.nombre_cientifico}
+          </TextNunitoSans>
+        </View>
+      </LinearGradient>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   image: {
-    flex: 1,
-    margin: 30,
+    height: Dimensions.get("window").height / 2,
+    marginTop: 38,
+    margin: 15,
     justifyContent: "center",
+    borderRadius: 20,
+  },
+  linearGradient: {
+    height: Dimensions.get("window").height / 2,
+    justifyContent: "flex-end",
+    paddingBottom: 40,
+    paddingHorizontal: 10,
   },
   IconBackContainer: {
-    padding: 10,
+    top: 30,
+    padding: 15, //distancia entre este contenedor y sus hijos
   },
   IconBackCircleContainer: {
     backgroundColor: "white",
-    width: 45,
-    height: 45,
+    width: 30,
+    height: 30,
     borderRadius: 60,
+    alignItems: "center",
+    justifyContent: "center",
   },
   absoluteContainer: {
     position: "absolute", // nos da la posicion absoluta, en este caso la de imagen, de esta manera con top y right, controlamos esas posiciones TOMANDO COMO REFERENCIA LA IMAGEN
@@ -81,7 +104,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   textContainer: {
-    flex: 1, // Make the container take up the full height
     justifyContent: "flex-end", // Align content at the bottom
     alignItems: "flex-start", // Align text to the left edge
   },

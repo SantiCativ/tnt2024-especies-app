@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Image, StyleSheet, View, Pressable } from "react-native";
+import { FlatList, Image, StyleSheet, View, Pressable, Dimensions } from "react-native";
 import { EspecieHome } from "../adapters/homeAdapters";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { Link } from "expo-router";
@@ -26,7 +26,7 @@ const EspecieCard: React.FC<{ especie: EspecieHome }> = ({ especie }) => {
           {especie.nombre_cientifico}
         </TextNunitoSans>
       ) : (
-        <TextNunitoSans style={styles.cardText}>
+        <TextNunitoSans style={styles.cardText} numberOfLines={1}>
           Especie sin imagen
         </TextNunitoSans>
       )}
@@ -48,9 +48,9 @@ export const EspecieList: React.FC<{ especies: EspecieHome[] }> = ({
             pathname: "/especie/[especieId]",
             params: { especieId: item.sp_id },
           }}
-           asChild //esta propiedad permite que a los componentes hijos no lo tome como una etiqueta <a> sino como una unidad direccionable
+          asChild //esta propiedad permite que a los componentes hijos no lo tome como una etiqueta <a> sino como una unidad direccionable
+          key={item.sp_id}
         >
-          {/* Meto Pressable para que me tome el link en android */}
           <Pressable>
             <EspecieCard key={item.sp_id.toString()} especie={item} />
           </Pressable>
@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column", //dispone los elementos HIJOS (imagen y nombre) verticalmente, uno debajo del otro.
     alignItems: "center", //alinea centralmente los elementos secundarios(hijos)
-    width: 145,
-    height: 174.01,
+    width: Dimensions.get('window').width*0.4,
+    height: 180.01,
     margin: 10,
     gap: 5,
     padding: 15,
