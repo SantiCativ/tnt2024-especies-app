@@ -1,8 +1,9 @@
 import React from "react";
-import { FlatList, Image, StyleSheet, View, Pressable, Dimensions } from "react-native";
+import { FlatList, StyleSheet, View, Pressable, Dimensions } from "react-native";
 import { EspecieHome } from "../adapters/homeAdapters";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { Link } from "expo-router";
+import { Image } from 'expo-image';
 
 //COMPONENTE CARD
 //Aca recibe como accesorio el especie, el cual tiene que ir tipado sino da error
@@ -19,6 +20,7 @@ const EspecieCard: React.FC<{ especie: EspecieHome }> = ({ especie }) => {
             : require("@/assets/images/placeholder.png") //si la imagen es nula muestro una de imagen estatica default
         }
         style={styles.cardImage}
+        
       />
 
       {especie.imagen ? (
