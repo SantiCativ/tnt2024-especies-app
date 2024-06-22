@@ -1,15 +1,23 @@
 import { FC, useState } from "react";
-import { TextStyle, Text, Pressable, StyleSheet } from "react-native";
+import {
+  TextStyle,
+  Pressable,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import DateTimePickerModal, {
   ReactNativeModalDateTimePickerProps,
 } from "react-native-modal-datetime-picker";
+import { CustomTextInput } from "./CustomTextInput";
 
 type DateTimeModalInputProps = Omit<
   ReactNativeModalDateTimePickerProps,
   "isVisible" | "onCancel"
 > & {
   placeholder?: string;
-  placeholderStyle?: TextStyle;
+  containerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
 };
 export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
   const {
@@ -17,7 +25,8 @@ export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
     mode,
     date,
     placeholder,
-    placeholderStyle,
+    containerStyle,
+    inputStyle,
     onConfirm,
     ...restProps
   } = props;
@@ -44,9 +53,13 @@ export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
         : date?.toLocaleDateString();
 
   return (
-    <Pressable onPress={showDatePicker} style={style}>
-      {placeholder && <Text style={placeholderStyle}>{placeholder}</Text>}
-      <Text style={styles.textColor}>{formattedDate ?? ""}</Text>
+    <Pressable onPress={showDatePicker} style={containerStyle}>
+      <CustomTextInput
+        placeholder={placeholder}
+        value={formattedDate ?? ""}
+        editable={false}
+        style={[styles.textInput, inputStyle]}
+      />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         onConfirm={handleConfirm}
@@ -60,7 +73,5 @@ export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
 };
 
 const styles = StyleSheet.create({
-  textColor: {
-    color: "black",
-  },
+  textInput: { color: "black" },
 });

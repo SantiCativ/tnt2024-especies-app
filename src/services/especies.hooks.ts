@@ -47,7 +47,6 @@ export function useEspecie(spId: number) {
         nombre_cientifico: "-",
         origen: "-",
         imagen: null,
-        likes: 0,
       }
     );
   };

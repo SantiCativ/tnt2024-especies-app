@@ -1,13 +1,9 @@
 import { EspecieDetail } from "@/src/components/EspecieDetail";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useEspecie } from "@/src/services/especies.hooks";
-import { themeColors, themeStyles } from "@/src/theme/theme";
-import { FontAwesome } from "@expo/vector-icons";
-import { ImageBackground } from "expo-image";
+import { themeStyles } from "@/src/theme/theme";
 import { useLocalSearchParams } from "expo-router";
-import { Link } from "expo-router";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, View } from "react-native";
 import { EspecieHeader } from "@/src/components/EspecieHeader";
 
 export default function EspecieShowScreen() {

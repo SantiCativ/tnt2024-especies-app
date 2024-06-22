@@ -1,18 +1,21 @@
 import { Dispatch, FC, SetStateAction } from "react";
-import { useEspecies } from "../services/especies.hooks";
+import { useEspeciesHome } from "../services/especies.hooks";
 import ModalSelector from "react-native-modal-selector";
-import { Platform, StyleSheet, TextInput } from "react-native";
+import { Platform, StyleProp, StyleSheet, TextStyle } from "react-native";
+import { CustomTextInput } from "./CustomTextInput";
 
 type EspecieSelectorProps = {
   spId: string | null;
   setSpId: Dispatch<SetStateAction<string | null>>;
+  inputStyle?: StyleProp<TextStyle>;
 };
 
 export const EspecieSelector: FC<EspecieSelectorProps> = ({
   spId,
   setSpId,
+  inputStyle,
 }) => {
-  const { data } = useEspecies();
+  const { data } = useEspeciesHome();
 
   const especieSeleccionada = data.find(
     (especie) => especie.sp_id === parseInt(spId ?? "-1")
@@ -34,10 +37,10 @@ export const EspecieSelector: FC<EspecieSelectorProps> = ({
       optionStyle={styles.optionStyle}
       optionTextStyle={styles.optionTextStyle}
     >
-      <TextInput
-        placeholder="Especie"
+      <CustomTextInput
+        placeholder="Seleccione una especie"
         value={especieSeleccionada?.nombre_cientifico ?? ""}
-        style={styles.inputStyle}
+        style={inputStyle}
       />
     </ModalSelector>
   );
@@ -51,13 +54,5 @@ const styles = StyleSheet.create({
       ios: "rgba(0,118,255,0.9)",
       default: "black",
     }),
-  },
-  inputStyle: {
-    height: 50,
-    width: 300,
-    backgroundColor: "white",
-    borderRadius: 30,
-    paddingLeft: 20,
-    paddingRight: 3,
   },
 });

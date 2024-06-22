@@ -5,13 +5,8 @@ import { useFilteredEspecies } from "@/src/services/especies.hooks";
 import { TReino, TReinoEnum } from "@/src/services/especies.service";
 import { themeColors, themeStyles } from "@/src/theme/theme";
 import { useState } from "react";
-import {
-  Button,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Button, Pressable, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [filter, setFilter] = useState<TReino | null>(null);
