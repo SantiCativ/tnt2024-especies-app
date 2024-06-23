@@ -7,13 +7,11 @@ import { Foundation } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 import { CameraView, useCameraPermissions, CameraViewRef } from "expo-camera";
-
+import { BotonReportar } from "@/src/components/BotonReportar";
+import { InputsReport } from "@/src/components/InputsReport";
 export default function ReportScreen() {
-  const [latitud, setLatitud] = useState("");
-  const [longitud, setLongitud] = useState("");
-  const [fecha, setFecha] = useState<Date>(new Date());
-  const [hora, setHora] = useState<Date>(new Date());
-  const [descripcion, setDescripcion] = useState("");
+  
+
   const [imagen, setImagen] = useState<string | null>(null);
 
   const [showCamera, setShowCamera] = useState(false);
@@ -41,19 +39,7 @@ export default function ReportScreen() {
   return (
     <SafeAreaView style={themeStyles.screen}>
       <View style={styles.container}>
-        <TextInput
-          placeholder="Descripción"
-          onChangeText={setDescripcion}
-          value={descripcion}
-          style={{
-            height: 50,
-            width: 300,
-            backgroundColor: "white",
-            borderRadius: 30,
-            paddingLeft: 20,
-            paddingRight: 3,
-          }}
-        />
+      <InputsReport/>
         <View
           style={{ flexDirection: "row", justifyContent: "center", gap: 10 }}
         >
@@ -102,7 +88,9 @@ export default function ReportScreen() {
             />
           </View>
         )}
+        <BotonReportar></BotonReportar>
       </View>
+      
     </SafeAreaView>
   );
 }

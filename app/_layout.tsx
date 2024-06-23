@@ -22,6 +22,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="especie/[especieId]"
           options={{ headerShown: false }}
+          
         />
       </Stack>
     </QueryClientProvider>
