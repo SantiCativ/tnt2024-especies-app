@@ -1,15 +1,23 @@
 import { FC, useState } from "react";
-import { TextStyle, Text, Pressable } from "react-native";
+import {
+  TextStyle,
+  Pressable,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import DateTimePickerModal, {
   ReactNativeModalDateTimePickerProps,
 } from "react-native-modal-datetime-picker";
+import { CustomTextInput } from "./CustomTextInput";
 
 type DateTimeModalInputProps = Omit<
   ReactNativeModalDateTimePickerProps,
   "isVisible" | "onCancel"
 > & {
   placeholder?: string;
-  placeholderStyle?: TextStyle;
+  containerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
 };
 export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
   const {
@@ -17,7 +25,8 @@ export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
     mode,
     date,
     placeholder,
-    placeholderStyle,
+    containerStyle,
+    inputStyle,
     onConfirm,
     ...restProps
   } = props;
@@ -40,13 +49,17 @@ export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
     mode === "time"
       ? date?.toLocaleTimeString()
       : mode === "datetime"
-      ? date?.toLocaleString()
-      : date?.toLocaleDateString();
+        ? date?.toLocaleString()
+        : date?.toLocaleDateString();
 
   return (
-    <Pressable onPress={showDatePicker} style={style}>
-      {placeholder && <Text style={placeholderStyle}>{placeholder}</Text>}
-      <Text style={{ color: "black" }}>{formattedDate ?? ""}</Text>
+    <Pressable onPress={showDatePicker} style={containerStyle}>
+      <CustomTextInput
+        placeholder={placeholder}
+        value={formattedDate ?? ""}
+        editable={false}
+        style={[styles.textInput, inputStyle]}
+      />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         onConfirm={handleConfirm}
@@ -58,3 +71,7 @@ export const DateTimeModalInput: FC<DateTimeModalInputProps> = (props) => {
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  textInput: { color: "black" },
+});
