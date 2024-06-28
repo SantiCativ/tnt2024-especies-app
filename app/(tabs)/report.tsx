@@ -18,6 +18,8 @@ import { CustomButton } from "@/src/components/CustomButton";
 import { CustomTextInput } from "@/src/components/CustomTextInput";
 import { Map } from "@/src/components/Map";
 import { TakePictureBtn } from "@/src/components/TakePictureBtn";
+import * as ImagePicker from "expo-image-picker";
+import { TReporte,sendReporte } from "@/src/services/especies.service";
 
 export default function ReportScreen() {
   const params = useLocalSearchParams<{ reportSpId: string }>();
@@ -43,9 +45,29 @@ export default function ReportScreen() {
     Platform.select({ ios: "numbers-and-punctuation", default: "numeric" });
 
   const pickImage = async () => {
-    // TODO: Obtengo la imagen de la galeria como base64
+    // Solicitar permisos para acceder a la galería
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    // TODO: seteo la imagen
+    if (status !== "granted") {
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        "Permiso de acceso a la galería denegado",
+      ]);
+      return;
+    }
+
+    // Abrir la galería y permitir seleccionar solo imágenes
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      base64: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // Si el usuario eligió una imagen, setear la imagen
+      setImagen(result.assets[0].uri);    
+    }
   };
 
   const enviarReporte = async () => {
@@ -73,8 +95,29 @@ export default function ReportScreen() {
     // no continuo si hay errores
     if (errorsArr.length > 0) {
       return;
-    }
+    } 
+    
+    const data: TReporte = {
+      sp_id: spId,
+      fecha:fecha,
+      hora:hora,
+      latitud: parseFloat(latitud),
+      longitud: parseFloat(longitud),
+      descripcion:descripcion,
+      imagen:imagen
+    };
 
+    try {
+      await sendReporte(data);
+      // Manejar éxito
+      console.log("Reporte enviado con éxito");
+    } catch (error) {
+      // Manejar error
+      console.error("Error al enviar el reporte", error);
+      console.error(error.request);
+      console.log(error.response);
+
+    }
 
     // reseteo formulario
     setSpId(null);
@@ -179,7 +222,7 @@ export default function ReportScreen() {
         </View>
 
         <Pressable onPress={enviarReporte}>
-          <CustomButton label="Reportar avistje" />
+          <CustomButton label="Reportar avistaje" />
         </Pressable>
       </ScrollView>
     </SafeAreaView>

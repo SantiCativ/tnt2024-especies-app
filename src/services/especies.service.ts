@@ -26,6 +26,8 @@ export async function sendReporte(reporte: TReporte) {
     formData.append("imagen", reporte.imagen);
   }
 
+  console.log(formData)
+
   // SI NUESTRO ENDPOINT ESPERA UN JSON
   // fetch(`${process.env.EXPO_PUBLIC_API_URL}/especies/${reporte.sp_id}/reportar`, {
   //   method: "POST",
