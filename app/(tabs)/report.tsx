@@ -7,7 +7,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DateTimeModalInput } from "@/src/components/DateTimeModalInput";
 import { Foundation } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -19,7 +19,7 @@ import { CustomTextInput } from "@/src/components/CustomTextInput";
 import { Map } from "@/src/components/Map";
 import { TakePictureBtn } from "@/src/components/TakePictureBtn";
 import * as ImagePicker from "expo-image-picker";
-import { TReporte,sendReporte } from "@/src/services/especies.service";
+import { TReporte, sendReporte } from "@/src/services/especies.service";
 
 export default function ReportScreen() {
   const params = useLocalSearchParams<{ reportSpId: string }>();
@@ -66,7 +66,7 @@ export default function ReportScreen() {
 
     if (!result.canceled) {
       // Si el usuario eligió una imagen, setear la imagen
-      setImagen(result.assets[0].base64 ? `data:image/jpeg;base64,${result.assets[0].base64}` : null );    
+      setImagen(result.assets[0].base64 ? `data:image/jpeg;base64,${result.assets[0].base64}` : null);
     }
   };
 
@@ -95,16 +95,16 @@ export default function ReportScreen() {
     // no continuo si hay errores
     if (errorsArr.length > 0) {
       return;
-    } 
-    
+    }
+
     const data: TReporte = {
       sp_id: spId,
-      fecha:fecha,
-      hora:hora,
+      fecha: fecha,
+      hora: hora,
       latitud: parseFloat(latitud),
       longitud: parseFloat(longitud),
-      descripcion:descripcion,
-      imagen:imagen
+      descripcion: descripcion,
+      imagen: imagen
     };
 
     try {
@@ -130,77 +130,55 @@ export default function ReportScreen() {
   };
 
   return (
-    <SafeAreaView style={themeStyles.screen}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <TextNunitoSans style={styles.title}>Reportar avistaje</TextNunitoSans>
+    <ScrollView
+      style={themeStyles.screen}
+      contentContainerStyle={[styles.container, { paddingTop: top }]}
+    >
+      <TextNunitoSans style={styles.title}>Reportar avistaje</TextNunitoSans>
 
-        <EspecieSelector
-          spId={spId}
-          setSpId={setSpId}
-          inputStyle={errors.includes("spId") ? styles.error : null}
+      <EspecieSelector
+        spId={spId}
+        setSpId={setSpId}
+        inputStyle={errors.includes("spId") ? styles.error : null}
+      />
+
+      <Map setLatitud={setLatitud} setLongitud={setLongitud} />
+
+      <View style={styles.rowContainer}>
+        <CustomTextInput
+          placeholder="Latitud"
+          onChangeText={setLatitud}
+          value={latitud}
+          style={[
+            styles.flex1,
+            errors.includes("latitud") ? styles.error : null,
+          ]}
+          keyboardType={numberInputType}
+          returnKeyType="done"
         />
 
-        <Map setLatitud={setLatitud} setLongitud={setLongitud} />
-
-        <View style={styles.rowContainer}>
-          <CustomTextInput
-            placeholder="Latitud"
-            onChangeText={setLatitud}
-            value={latitud}
-            style={[
-              styles.flex1,
-              errors.includes("latitud") ? styles.error : null,
-            ]}
-            keyboardType={numberInputType}
-            returnKeyType="done"
-          />
-
-          <CustomTextInput
-            placeholder="Longitud"
-            onChangeText={setLongitud}
-            value={longitud}
-            style={[
-              styles.flex1,
-              errors.includes("longitud") ? styles.error : null,
-            ]}
-            keyboardType={numberInputType}
-            returnKeyType="done"
-          />
-        </View>
-
-        <View style={styles.rowContainer}>
-          <DateTimeModalInput
-            placeholder="Fecha"
-            display="inline"
-            mode="date"
-            date={fecha}
-            onConfirm={setFecha}
-            containerStyle={styles.flex1}
-            inputStyle={errors.includes("fecha") ? styles.error : null}
-          />
-
-          <DateTimeModalInput
-            placeholder="Hora"
-            display="inline"
-            mode="time"
-            date={hora}
-            onConfirm={setHora}
-            containerStyle={styles.flex1}
-            inputStyle={errors.includes("hora") ? styles.error : null}
-          />
-        </View>
-
         <CustomTextInput
-          placeholder="Descripción"
-          onChangeText={setDescripcion}
-          value={descripcion}
-          returnKeyType="done"
-          multiline
-          numberOfLines={3}
+          placeholder="Longitud"
+          onChangeText={setLongitud}
+          value={longitud}
           style={[
-            styles.descripcionInput,
-            errors.includes("descripcion") ? styles.error : null,
+            styles.flex1,
+            errors.includes("longitud") ? styles.error : null,
           ]}
+          keyboardType={numberInputType}
+          returnKeyType="done"
+        />
+      </View>
+
+      <View style={styles.rowContainer}>
+        <DateTimeModalInput
+          placeholder="Fecha"
+          display="inline"
+          mode="date"
+          date={fecha}
+          onConfirm={setFecha}
+          containerStyle={styles.flex1}
+          inputStyle={errors.includes("fecha") ? styles.error : null}
         />
 
         <View style={styles.imgCaptureContainer}>
@@ -225,15 +203,64 @@ export default function ReportScreen() {
         <Pressable onPress={enviarReporte}>
           <CustomButton label="Reportar avistaje" />
         </Pressable>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 }
 
+//! CAMBIO DE LEO, COMPARAR Y VER CUAL VERSION QUEDARNOS
+{/* <DateTimeModalInput
+        placeholder="Hora"
+        display="inline"
+        mode="time"
+        date={hora}
+        onConfirm={setHora}
+        containerStyle={styles.flex1}
+        inputStyle={errors.includes("hora") ? styles.error : null}
+      />
+    </View>
+
+    <CustomTextInput
+      placeholder="Descripción"
+      onChangeText={setDescripcion}
+      value={descripcion}
+      returnKeyType="done"
+      multiline
+      numberOfLines={3}
+      style={[
+        styles.descripcionInput,
+        errors.includes("descripcion") ? styles.error : null,
+      ]}
+    />
+
+    <View style={styles.imgCaptureContainer}>
+      <Image
+        source={imagen}
+        placeholder={require("@/assets/images/placeholder.png")}
+        placeholderContentFit="cover"
+        style={styles.imagePreview}
+      />
+      <View>
+        <TakePictureBtn setImagen={setImagen} />
+        <Foundation
+          name="photo"
+          size={40}
+          color="white"
+          onPress={pickImage}
+        />
+      </View>
+    </View>
+
+    <Pressable onPress={enviarReporte}>
+      <CustomButton label="Reportar avistje" />
+    </Pressable>  */}
+
+
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 25,
+    paddingHorizontal: 25,
+    paddingBottom: 10,
     gap: 16,
   },
   title: {
