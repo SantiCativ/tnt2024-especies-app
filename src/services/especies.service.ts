@@ -45,10 +45,26 @@ export async function sendReporte(reporte: TReporte) {
   //   }
   // );
 
-  return axios.post(
-    `${process.env.EXPO_PUBLIC_API_URL}/especies/${reporte.sp_id}/reportar`,
-    formData
-  );
+  const apiUrl = `${process.env.EXPO_PUBLIC_API_URL}/especies/${reporte.sp_id}/reportar`;
+  console.log(`API URL: ${apiUrl}`);
+
+  return axios.post(apiUrl, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  .then(response => {
+    console.log('Response:', response.data);
+    return response.data;
+  })
+  .catch(error => {
+    console.error('Error en la solicitud', error);
+    if (error.response) {
+      console.error('Datos del error:', error.response.data);
+      console.error('Estado del error:', error.response.status);
+      console.error('Encabezados del error:', error.response.headers);
+    }
+  });
 }
 
 export interface TReporte {

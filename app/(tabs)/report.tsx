@@ -66,7 +66,7 @@ export default function ReportScreen() {
 
     if (!result.canceled) {
       // Si el usuario eligió una imagen, setear la imagen
-      setImagen(result.assets[0].uri);    
+      setImagen(result.assets[0].base64 ? `data:image/jpeg;base64,${result.assets[0].base64}` : null );    
     }
   };
 
@@ -216,6 +216,7 @@ export default function ReportScreen() {
               name="photo"
               size={40}
               color="white"
+              placeholderContentFit="cover"
               onPress={pickImage}
             />
           </View>
