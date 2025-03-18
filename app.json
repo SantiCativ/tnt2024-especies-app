@@ -43,6 +43,20 @@
             "assets/fonts/NunitoSans_10pt-SemiBold.ttf"
           ]
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Quiero acceder a tus fotos. Te voy a robar todos los datos."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Permite a $(PRODUCT_NAME) acceder a su cámara",
+          "microphonePermission": "-",
+          "recordAudioAndroid": false
+        }
       ]
     ],
     "experiments": {
