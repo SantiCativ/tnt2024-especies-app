@@ -5,18 +5,12 @@ import { useFilteredEspecies } from "@/src/services/especies.hooks";
 import { TReino, TReinoEnum } from "@/src/services/especies.service";
 import { themeColors, themeStyles } from "@/src/theme/theme";
 import { useState } from "react";
-import {
-  Button,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { Button, Pressable, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [filter, setFilter] = useState<TReino | null>(null);
-
-  
 
   const {
     data: especies, // renombro data a especies
@@ -49,9 +43,11 @@ export default function HomeScreen() {
     <SafeAreaView style={themeStyles.screen}>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
+          <StatusBar style="light" />
           <TextNunitoSans style={styles.title}>Hola Usuario</TextNunitoSans>
+
           <View style={styles.filtersContainer}>
-            <Pressable onPress={handleRemoveFilter} >
+            <Pressable onPress={handleRemoveFilter}>
               <HomeFilter filter={filter} name={null} />
             </Pressable>
             <Pressable onPress={handleFilter(TReinoEnum.ANIMALIA)}>
@@ -75,11 +71,9 @@ export default function HomeScreen() {
             <Button title="Reintentar" onPress={handleReintentar} />
           </View>
         )}
-        
-        <TextNunitoSans style={styles.textError}>
-              
-            </TextNunitoSans>
-        
+
+        <TextNunitoSans style={styles.textError}></TextNunitoSans>
+
         <EspecieList especies={especies} />
       </View>
     </SafeAreaView>
@@ -98,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
+    paddingTop:20,
     fontSize: 20,
     fontWeight: "bold",
     color: themeColors.textBase,

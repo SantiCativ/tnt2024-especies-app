@@ -1,4 +1,3 @@
-// import { EspecieProvider } from "@/src/context/especies.context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 
@@ -22,6 +21,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="especie/[especieId]"
           options={{ headerShown: false }}
+          
         />
       </Stack>
     </QueryClientProvider>

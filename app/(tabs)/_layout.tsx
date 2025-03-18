@@ -24,6 +24,7 @@ export default function TabLayout() {
             <Foundation name="home" size={24} color={color} />
           ),
         }}
+        
       />
       <Tabs.Screen
         name="report"

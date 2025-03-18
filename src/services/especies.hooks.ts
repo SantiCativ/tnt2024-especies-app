@@ -9,8 +9,6 @@ export function useEspecies(customSelect?: any) {
   const result = useQuery({
     queryKey: ["especies"],
     queryFn: () => {
-      // dejamos este console solo para evidenciar
-      console.log("useEspecies");
       return getEspecies();
     },
     // data inicial antes del primer fetch
@@ -49,7 +47,6 @@ export function useEspecie(spId: number) {
         nombre_cientifico: "-",
         origen: "-",
         imagen: null,
-        likes: 0,
       }
     );
   };

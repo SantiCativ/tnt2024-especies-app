@@ -1,20 +1,53 @@
-import { TextProps, Text as RNText } from "react-native";
+import { TextProps, Text as RNText, TextStyle } from "react-native";
 import { themeStyles } from "@/src/theme/theme";
 import { useFonts } from "expo-font";
 
-const regularMap = {
-  100: "NunitoSans_10pt_ExtraLight",
-  200: "NunitoSans_10pt_ExtraLight",
-  300: "NunitoSans_10pt_Light",
-  normal: "NunitoSans_10pt_Regular",
-  400: "NunitoSans_10pt_Regular",
-  500: "NunitoSans_10pt_Medium",
-  600: "NunitoSans_10pt_SemiBold",
-  bold: "NunitoSans_10pt_Bold",
-  700: "NunitoSans_10pt_Bold",
-  800: "NunitoSans_10pt_ExtraBold",
-  900: "NunitoSans_10pt_Black",
-};
+function fontWeightFromValue(value: number | string): string {
+  switch (value) {
+    case "100":
+    case 100:
+    case "thin":
+      return "NunitoSans_10pt_ExtraLight";
+    case "200":
+    case 200:
+    case "ultralight":
+      return "NunitoSans_10pt_ExtraLight";
+    case "300":
+    case 300:
+    case "light":
+      return "NunitoSans_10pt_Light";
+    case "400":
+    case 400:
+    case "normal":
+    case "regular":
+    case "condensed":
+      return "NunitoSans_10pt_Regular";
+    case "500":
+    case 500:
+    case "medium":
+      return "NunitoSans_10pt_Medium";
+    case "600":
+    case 600:
+    case "semibold":
+      return "NunitoSans_10pt_SemiBold";
+    case "700":
+    case 700:
+    case "bold":
+    case "condensedBold":
+      return "NunitoSans_10pt_Bold";
+    case "800":
+    case 800:
+    case "extrabold":
+      return "NunitoSans_10pt_ExtraBold";
+    case "900":
+    case 900:
+    case "black":
+    case "heavy":
+      return "NunitoSans_10pt_Black";
+    default:
+      return "NunitoSans_10pt_Regular";
+  }
+}
 
 export const TextNunitoSans = ({ style, ...props }: TextProps): JSX.Element => {
   const [fontsLoaded, fontError] = useFonts({
@@ -36,7 +69,9 @@ export const TextNunitoSans = ({ style, ...props }: TextProps): JSX.Element => {
     );
   }
 
-  const fontFamily = regularMap[style?.fontWeight ?? 400];
+  const fontFamily = fontWeightFromValue(
+    (style as TextStyle)?.fontWeight ?? 400
+  );
 
   return (
     <RNText

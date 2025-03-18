@@ -12,9 +12,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import {useRouter} from "expo-router"
 
 export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
-  const navigation = useNavigation();
+  const {back} = useRouter();
   return (
     <ImageBackground
       source={
@@ -28,7 +29,7 @@ export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
       
         <View style={styles.IconBackContainer}>
           <View style={styles.IconBackCircleContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={back}>
             <Ionicons name="chevron-back-outline" size={30} color="black" />
             </TouchableOpacity>
           </View>
@@ -68,6 +69,7 @@ const styles = StyleSheet.create({
     margin: 15,
     justifyContent: "center",
     borderRadius: 20,
+    shadowRadius:20,
   },
   linearGradient: {
     height: Dimensions.get("window").height / 2,

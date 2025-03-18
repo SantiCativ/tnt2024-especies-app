@@ -3,7 +3,7 @@ import { Link } from "expo-router";
 import { Pressable, View, StyleSheet } from "react-native";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 
-export const Boton = () => {
+export const BotonReportar = () => {
 
     return (
       <Link
