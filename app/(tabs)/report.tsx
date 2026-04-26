@@ -132,7 +132,7 @@ export default function ReportScreen() {
   return (
     <ScrollView
       style={themeStyles.screen}
-      contentContainerStyle={[styles.container, { paddingTop: top }]}
+      contentContainerStyle={[styles.container, { paddingTop: 10 + useSafeAreaInsets().top }]}
     >
       <TextNunitoSans style={styles.title}>Reportar avistaje</TextNunitoSans>
 
@@ -181,29 +181,51 @@ export default function ReportScreen() {
           inputStyle={errors.includes("fecha") ? styles.error : null}
         />
 
-        <View style={styles.imgCaptureContainer}>
-          <Image
-            source={imagen}
-            placeholder={require("@/assets/images/placeholder.png")}
-            placeholderContentFit="cover"
-            style={styles.imagePreview}
-          />
-          <View>
-            <TakePictureBtn setImagen={setImagen} />
-            <Foundation
-              name="photo"
-              size={40}
-              color="white"
-              placeholderContentFit="cover"
-              onPress={pickImage}
-            />
-          </View>
-        </View>
-
-        <Pressable onPress={enviarReporte}>
-          <CustomButton label="Reportar avistaje" />
-        </Pressable>
+        <DateTimeModalInput
+          placeholder="Hora"
+          display="inline"
+          mode="time"
+          date={hora}
+          onConfirm={setHora}
+          containerStyle={styles.flex1}
+          inputStyle={errors.includes("hora") ? styles.error : null}
+        />
       </View>
+
+      <CustomTextInput
+        placeholder="Descripción"
+        onChangeText={setDescripcion}
+        value={descripcion}
+        returnKeyType="done"
+        multiline
+        numberOfLines={3}
+        style={[
+          styles.descripcionInput,
+          errors.includes("descripcion") ? styles.error : null,
+        ]}
+      />
+
+      <View style={styles.imgCaptureContainer}>
+        <Image
+          source={imagen}
+          placeholder={require("@/assets/images/placeholder.png")}
+          placeholderContentFit="cover"
+          style={styles.imagePreview}
+        />
+        <View>
+          <TakePictureBtn setImagen={setImagen} />
+          <Foundation
+            name="photo"
+            size={40}
+            color="white"
+            onPress={pickImage}
+          />
+        </View>
+      </View>
+
+      <Pressable onPress={enviarReporte}>
+        <CustomButton label="Reportar avistje" />
+      </Pressable>
     </ScrollView>
   );
 }
