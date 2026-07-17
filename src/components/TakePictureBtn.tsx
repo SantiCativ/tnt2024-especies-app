@@ -1,5 +1,5 @@
 import { FontAwesome6, Foundation } from "@expo/vector-icons";
-import { CameraView, CameraViewRef, useCameraPermissions } from "expo-camera";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { openSettings } from "expo-linking";
 import {
   Dispatch,
@@ -27,7 +27,7 @@ export const TakePictureBtn: FC<TakePictureBtnProps> = ({ setImagen }) => {
 
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [permission, requestPermission] = useCameraPermissions();
-  const cameraRef = useRef<CameraViewRef>();
+  const cameraRef = useRef<CameraView | null>(null);
 
   const handleOpenCamera = () => {
     setShowCamera(true);
@@ -48,8 +48,8 @@ export const TakePictureBtn: FC<TakePictureBtnProps> = ({ setImagen }) => {
   };
 
   const onTakePicture = async () => {
-    const photo = await cameraRef.current?.takePictureAsync({ base64: true });
-    setImagen(photo.base64 ? `data:image/jpeg;base64,${photo.base64}` : null);
+    const photo = await cameraRef.current?.takePictureAsync();
+    setImagen(photo?.uri ?? null);
     handleCloseCamera();
   };
 

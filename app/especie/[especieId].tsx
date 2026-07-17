@@ -1,24 +1,38 @@
 import { EspecieDetail } from "@/src/components/EspecieDetail";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useEspecie } from "@/src/services/especies.hooks";
-import { themeColors, themeStyles } from "@/src/theme/theme";
-import { FontAwesome } from "@expo/vector-icons";
-import { ImageBackground } from "expo-image";
+import { themeStyles } from "@/src/theme/theme";
 import { useLocalSearchParams } from "expo-router"; //biblioteca para recuperar los parámetros de búsqueda para el contexto de la ruta actual.
-import { Link } from "expo-router";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, View } from "react-native";
 import { EspecieHeader } from "@/src/components/EspecieHeader";
+
+function parseEspecieId(especieId: string | string[] | undefined) {
+  if (typeof especieId !== "string") {
+    return null;
+  }
+
+  const parsedId = Number(especieId);
+  return Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null;
+}
 
 export default function EspecieShowScreen() {
   const searchParams = useLocalSearchParams();
 
   //obtenemos id de la ruta
-  const spId =
-    typeof searchParams.especieId === "string"
-      ? parseInt(searchParams.especieId)
-      : 1;
+  const spId = parseEspecieId(searchParams.especieId);
 
+  if (spId === null) {
+    return (
+      <View style={styles.container}>
+        <TextNunitoSans>El id de la especie no es valido</TextNunitoSans>
+      </View>
+    );
+  }
+
+  return <EspecieDetailScreen spId={spId} />;
+}
+
+function EspecieDetailScreen({ spId }: { spId: number }) {
   const { data: especie, isFetching, isError } = useEspecie(spId);
 
   if (isFetching) {

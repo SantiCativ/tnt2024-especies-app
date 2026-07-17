@@ -4,13 +4,11 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Pressable,
   Dimensions,
 } from "react-native";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import {useRouter} from "expo-router"
 
@@ -39,9 +37,6 @@ export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
       <View style={styles.absoluteContainer}>
         <View style={styles.IconLikeContainer}>
           <FontAwesome name="heart" size={24} color="#EF5DA8" />
-          <TextNunitoSans style={{ fontSize: 12, color: "black" }}>
-            {especie.likes} likes
-          </TextNunitoSans>
         </View>
       </View>
 

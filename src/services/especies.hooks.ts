@@ -1,11 +1,13 @@
-import { DefinedUseQueryResult, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   EspecieHome,
   preparaEspeciesParaHome,
 } from "@/src/adapters/homeAdapters";
-import { TEspecie, TReino, TReinoEnum, getEspecies } from "./especies.service";
+import { TEspecie, TReino, getEspecies } from "./especies.service";
 
-export function useEspecies(customSelect?: any) {
+export function useEspecies<TData = TEspecie[]>(
+  customSelect?: (data: TEspecie[]) => TData
+) {
   const result = useQuery({
     queryKey: ["especies"],
     queryFn: () => {
@@ -32,25 +34,13 @@ export function useEspeciesHome() {
 }
 
 export function useEspecie(spId: number) {
-  const selectorAdapter = (data: TEspecie[]): TEspecie => {
+  const selectorAdapter = (data: TEspecie[]): TEspecie | null => {
     const especie = data.find((especie) => {
       return especie.sp_id === spId;
     });
-    return (
-      especie ?? {
-        sp_id: 0,
-        reino: TReinoEnum.ANIMALIA,
-        phydiv: "-",
-        clase: "-",
-        orden: "-",
-        familia: "-",
-        nombre_cientifico: "-",
-        origen: "-",
-        imagen: null,
-      }
-    );
+    return especie ?? null;
   };
-  return useEspecies(selectorAdapter) as DefinedUseQueryResult<TEspecie[], Error>;
+  return useEspecies(selectorAdapter);
 }
 
 export function useFilteredEspecies(reino: null | TReino) {

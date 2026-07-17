@@ -21,6 +21,14 @@ import { TakePictureBtn } from "@/src/components/TakePictureBtn";
 import * as ImagePicker from "expo-image-picker";
 import { TReporte, sendReporte } from "@/src/services/especies.service";
 
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "Error desconocido";
+}
+
 export default function ReportScreen() {
   const params = useLocalSearchParams<{ reportSpId: string }>();
 
@@ -72,8 +80,10 @@ export default function ReportScreen() {
 
   const enviarReporte = async () => {
     // Chequeo errores
-    let errorsArr = [];
-    if (spId === null) {
+    const errorsArr: string[] = [];
+    const spIdNumber = spId === null ? NaN : Number(spId);
+
+    if (!Number.isInteger(spIdNumber) || spIdNumber <= 0) {
       errorsArr.push("spId");
     }
     if (latitud === "") {
@@ -98,7 +108,7 @@ export default function ReportScreen() {
     }
 
     const data: TReporte = {
-      sp_id: spId,
+      sp_id: spIdNumber,
       fecha: fecha,
       hora: hora,
       latitud: parseFloat(latitud),
@@ -113,10 +123,7 @@ export default function ReportScreen() {
       console.log("Reporte enviado con éxito");
     } catch (error) {
       // Manejar error
-      console.error("Error al enviar el reporte", error);
-      console.error(error.request);
-      console.log(error.response);
-
+      console.error("Error al enviar el reporte", getErrorMessage(error));
     }
 
     // reseteo formulario
