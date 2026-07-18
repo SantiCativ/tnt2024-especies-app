@@ -8,8 +8,10 @@ import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Button, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/src/context/AuthContext";
 
 export default function HomeScreen() {
+  const { user } = useAuth();
   const [filter, setFilter] = useState<TReino | null>(null);
 
   const {
@@ -44,7 +46,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <StatusBar style="light" />
-          <TextNunitoSans style={styles.title}>Hola Usuario</TextNunitoSans>
+          <TextNunitoSans style={styles.title}>Hola {user?.email ?? "Anonimo"}</TextNunitoSans>
 
           <View style={styles.filtersContainer}>
             <Pressable onPress={handleRemoveFilter}>
