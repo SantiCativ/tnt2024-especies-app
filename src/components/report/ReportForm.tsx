@@ -115,7 +115,7 @@ export const ReportForm: FC<ReportFormProps> = ({
       />
 
       <Pressable onPress={form.submit}>
-        <CustomButton label="Reportar avistje" />
+        <CustomButton label="Reportar avistaje" />
       </Pressable>
     </ScrollView>
   );
