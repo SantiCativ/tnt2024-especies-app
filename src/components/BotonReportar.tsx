@@ -3,12 +3,13 @@ import { Link } from "expo-router";
 import { Pressable, View, StyleSheet } from "react-native";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 
-export const BotonReportar = () => {
+export const BotonReportar : React.FC<{ reportSpId: number }> = ({ reportSpId }) =>  {
 
     return (
       <Link
         href={{
           pathname: "/report",
+          params:{ reportSpId: reportSpId },
         }}
         asChild
       >

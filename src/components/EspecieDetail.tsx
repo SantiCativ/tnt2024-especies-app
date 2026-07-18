@@ -54,7 +54,7 @@ export const EspecieDetail: React.FC<{ especie: TEspecie }> = ({ especie }) => {
         <Encabezado/>
         <Detalle especie={especie}/>
       </View>
-      <BotonReportar/>
+      <BotonReportar reportSpId={especie.sp_id}/>
     </View>
   );
 };
