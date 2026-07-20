@@ -5,11 +5,13 @@ import { useLocalSearchParams } from "expo-router";
 import { themeColors } from "@/src/theme/theme";
 import { useEffect } from "react";
 import { router } from "expo-router";
+import { useIsFocused } from "@react-navigation/native";
 
 
 export default function ReportScreen() {
   const params = useLocalSearchParams<{ reportSpId?: string }>();
   const { user, loading } = useAuth();
+  const isFocused = useIsFocused();
 
   if (loading) {
     return (
@@ -23,10 +25,10 @@ export default function ReportScreen() {
   }
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && isFocused) {
       router.push("/login");
     }
-  }, [loading, user]);
+  }, [loading, user, isFocused]);
 
   return (
     <ReportForm
