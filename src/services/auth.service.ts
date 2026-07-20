@@ -1,5 +1,6 @@
 import {
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
 
@@ -18,6 +19,18 @@ export const login = async (
   return credential.user;
 };
 
+export const register = async (
+  email: string,
+  password: string
+) => {
+  const credential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  return credential.user;
+};
+
 export const logout = async () => {
   await signOut(auth);
-};
+};

@@ -9,51 +9,62 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
-import { useLoginForm } from "@/src/hooks/useLoginForm";
+import { useRegisterForm } from "@/src/hooks/useRegisterForm";
 import { themeColors } from "@/src/theme/theme";
 
-interface LoginFormProps {
-  onLoginSuccess: () => void;
+interface RegisterFormProps {
+  onRegisterSuccess: () => void;
 }
 
-export function LoginForm({ onLoginSuccess }: LoginFormProps) {
+export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
   const {
     email,
     setEmail,
     password,
     setPassword,
+    confirmPassword,
+    setConfirmPassword,
     showPassword,
     togglePasswordVisibility,
+    showConfirmPassword,
+    toggleConfirmPasswordVisibility,
     isLoading,
-    handleLogin,
-  } = useLoginForm();
+    hasMinLength,
+    hasUppercase,
+    hasNumber,
+    handleRegister,
+  } = useRegisterForm();
 
   const handleSubmit = async () => {
-    const success = await handleLogin();
+    const success = await handleRegister();
 
     if (success) {
-      onLoginSuccess();
+      onRegisterSuccess();
     }
   };
 
+  const handleGoToLogin = () => {
+    router.replace("/login");
+  };
+
   return (
-    <View style={styles.loginCard}>
+    <View style={styles.card}>
       {/* Encabezado */}
-      <View style={styles.loginHeader}>
+      <View style={styles.header}>
         <MaterialCommunityIcons
           name="leaf"
           size={28}
           color={themeColors.primary}
-          style={styles.loginHeaderIcon}
+          style={styles.headerIcon}
         />
 
-        <TextNunitoSans style={styles.loginTitle}>
-          Iniciar sesión
+        <TextNunitoSans style={styles.title}>
+          Crear cuenta
         </TextNunitoSans>
       </View>
 
-      <TextNunitoSans style={styles.loginSubtitle}>
-        Accedé para reportar avistajes{"\n"}y ver tu actividad.
+      <TextNunitoSans style={styles.subtitle}>
+        Unite a la comunidad y comenzá{"\n"}a registrar la biodiversidad.
       </TextNunitoSans>
 
       {/* Correo electrónico */}
@@ -105,7 +116,6 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
           autoCapitalize="none"
           autoCorrect={false}
           editable={!isLoading}
-          onSubmitEditing={handleSubmit}
         />
 
         <TouchableOpacity
@@ -125,21 +135,109 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
         </TouchableOpacity>
       </View>
 
-      {/* Olvidaste tu contraseña */}
-      <TouchableOpacity
-        style={styles.forgotPassword}
-        disabled={isLoading}
-      >
-        <TextNunitoSans style={styles.forgotPasswordText}>
-          ¿Olvidaste tu contraseña?
-        </TextNunitoSans>
-      </TouchableOpacity>
+      {/* Confirmar contraseña */}
+      <TextNunitoSans style={styles.inputLabel}>
+        Confirmar contraseña
+      </TextNunitoSans>
 
-      {/* Iniciar sesión */}
+      <View style={styles.inputContainer}>
+        <Ionicons
+          name="lock-closed-outline"
+          size={20}
+          color="#888"
+          style={styles.inputIcon}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="••••••••"
+          placeholderTextColor="#666"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={!showConfirmPassword}
+          autoCapitalize="none"
+          autoCorrect={false}
+          editable={!isLoading}
+          onSubmitEditing={handleSubmit}
+        />
+
+        <TouchableOpacity
+          onPress={toggleConfirmPasswordVisibility}
+          style={styles.eyeButton}
+          disabled={isLoading}
+        >
+          <Ionicons
+            name={
+              showConfirmPassword
+                ? "eye-outline"
+                : "eye-off-outline"
+            }
+            size={22}
+            color="#888"
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Requisitos de contraseña */}
+      <View style={styles.requirementsContainer}>
+        <TextNunitoSans style={styles.requirementsTitle}>
+          La contraseña debe tener:
+        </TextNunitoSans>
+
+        <View style={styles.requirementRow}>
+          <Ionicons
+            name="checkmark-circle"
+            size={18}
+            color={hasMinLength ? themeColors.primary : "#555"}
+          />
+          <TextNunitoSans
+            style={[
+              styles.requirementText,
+              hasMinLength && styles.requirementMet,
+            ]}
+          >
+            Mínimo 6 caracteres
+          </TextNunitoSans>
+        </View>
+
+        <View style={styles.requirementRow}>
+          <Ionicons
+            name="checkmark-circle"
+            size={18}
+            color={hasUppercase ? themeColors.primary : "#555"}
+          />
+          <TextNunitoSans
+            style={[
+              styles.requirementText,
+              hasUppercase && styles.requirementMet,
+            ]}
+          >
+            Al menos una mayúscula
+          </TextNunitoSans>
+        </View>
+
+        <View style={styles.requirementRow}>
+          <Ionicons
+            name="checkmark-circle"
+            size={18}
+            color={hasNumber ? themeColors.primary : "#555"}
+          />
+          <TextNunitoSans
+            style={[
+              styles.requirementText,
+              hasNumber && styles.requirementMet,
+            ]}
+          >
+            Al menos un número
+          </TextNunitoSans>
+        </View>
+      </View>
+
+      {/* Crear cuenta */}
       <TouchableOpacity
         style={[
-          styles.loginButton,
-          isLoading && styles.loginButtonDisabled,
+          styles.submitButton,
+          isLoading && styles.submitButtonDisabled,
         ]}
         onPress={handleSubmit}
         disabled={isLoading}
@@ -151,8 +249,8 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
             color="#13140D"
           />
         ) : (
-          <TextNunitoSans style={styles.loginButtonText}>
-            Iniciar sesión
+          <TextNunitoSans style={styles.submitButtonText}>
+            Crear cuenta
           </TextNunitoSans>
         )}
       </TouchableOpacity>
@@ -168,22 +266,22 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
         <View style={styles.dividerLine} />
       </View>
 
-      {/* Crear cuenta */}
+      {/* Ya tengo cuenta */}
       <TouchableOpacity
-        style={styles.createAccountButton}
+        style={styles.loginButton}
         activeOpacity={0.8}
         disabled={isLoading}
-        onPress={() => router.replace("/register")}
+        onPress={handleGoToLogin}
       >
         <Ionicons
-          name="person-add-outline"
+          name="person-outline"
           size={20}
           color={themeColors.primary}
-          style={styles.createAccountIcon}
+          style={styles.loginButtonIcon}
         />
 
-        <TextNunitoSans style={styles.createAccountText}>
-          Crear cuenta
+        <TextNunitoSans style={styles.loginButtonText}>
+          Ya tengo cuenta
         </TextNunitoSans>
       </TouchableOpacity>
 
@@ -216,7 +314,7 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
 }
 
 const styles = StyleSheet.create({
-  loginCard: {
+  card: {
     flex: 1,
     backgroundColor: "#1C1D15",
     borderTopLeftRadius: 28,
@@ -227,23 +325,23 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
 
-  loginHeader: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   },
 
-  loginHeaderIcon: {
+  headerIcon: {
     marginRight: 10,
   },
 
-  loginTitle: {
+  title: {
     fontSize: 26,
     fontWeight: "800",
     color: "white",
   },
 
-  loginSubtitle: {
+  subtitle: {
     fontSize: 14,
     color: "rgba(255,255,255,0.6)",
     lineHeight: 20,
@@ -284,19 +382,35 @@ const styles = StyleSheet.create({
     padding: 4,
   },
 
-  forgotPassword: {
-    alignSelf: "flex-end",
-    marginBottom: 24,
-    marginTop: -8,
+  requirementsContainer: {
+    marginBottom: 20,
+    gap: 6,
   },
 
-  forgotPasswordText: {
+  requirementsTitle: {
     fontSize: 13,
-    color: themeColors.primary,
     fontWeight: "600",
+    color: themeColors.primary,
+    marginBottom: 4,
   },
 
-  loginButton: {
+  requirementRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  requirementText: {
+    fontSize: 13,
+    color: "#777",
+    fontWeight: "400",
+  },
+
+  requirementMet: {
+    color: "rgba(255,255,255,0.8)",
+  },
+
+  submitButton: {
     backgroundColor: themeColors.primary,
     height: 52,
     borderRadius: 26,
@@ -304,11 +418,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  loginButtonDisabled: {
+  submitButtonDisabled: {
     opacity: 0.7,
   },
 
-  loginButtonText: {
+  submitButtonText: {
     fontSize: 17,
     fontWeight: "700",
     color: "#13140D",
@@ -333,7 +447,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
 
-  createAccountButton: {
+  loginButton: {
     flexDirection: "row",
     height: 52,
     borderRadius: 26,
@@ -344,11 +458,11 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
 
-  createAccountIcon: {
+  loginButtonIcon: {
     marginRight: 8,
   },
 
-  createAccountText: {
+  loginButtonText: {
     fontSize: 17,
     fontWeight: "700",
     color: themeColors.primary,

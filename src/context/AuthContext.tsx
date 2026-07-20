@@ -12,12 +12,14 @@ import { auth } from "@/src/config/firebase";
 import {
   login as loginService,
   logout as logoutService,
+  register as registerService,
 } from "@/src/services/auth.service";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -54,6 +56,13 @@ export function AuthProvider({
     await loginService(email, password);
   };
 
+  const register = async (
+    email: string,
+    password: string
+  ) => {
+    await registerService(email, password);
+  };
+
   const logout = async () => {
     await logoutService();
   };
@@ -64,6 +73,7 @@ export function AuthProvider({
         user,
         loading,
         login,
+        register,
         logout,
       }}
     >
