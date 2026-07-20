@@ -1,9 +1,11 @@
+import { ConfirmModal } from "@/src/components/ConfirmModal";
 import { EspecieList } from "@/src/components/EspecieList";
 import { HomeFilter } from "@/src/components/HomeFilter";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useFilteredEspecies } from "@/src/services/especies.hooks";
 import { TReino, TReinoEnum } from "@/src/services/especies.service";
 import { themeColors, themeStyles } from "@/src/theme/theme";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Button, Pressable, StyleSheet, View } from "react-native";
@@ -11,8 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/src/context/AuthContext";
 
 export default function HomeScreen() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [filter, setFilter] = useState<TReino | null>(null);
+  const displayName =
+    user?.email?.split("@")[0] ?? "Anónimo";
 
   const {
     data: especies, // renombro data a especies
@@ -38,6 +43,11 @@ export default function HomeScreen() {
     refetch?.();
   };
 
+  const handleLogout = () => {
+    logout();
+    setShowLogoutModal(false);
+  };
+
   //
   // Render
   //
@@ -46,7 +56,14 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <StatusBar style="light" />
-          <TextNunitoSans style={styles.title}>Hola {user?.email ?? "Anonimo"}</TextNunitoSans>
+          <View style={styles.titleRow}>
+            <TextNunitoSans style={styles.title}>Hola {displayName}</TextNunitoSans>
+            {user && (
+              <Pressable onPress={() => setShowLogoutModal(true)}>
+                <Ionicons name="log-out-outline" size={26} color={themeColors.textBase} />
+              </Pressable>
+            )}
+          </View>
 
           <View style={styles.filtersContainer}>
             <Pressable onPress={handleRemoveFilter}>
@@ -77,6 +94,17 @@ export default function HomeScreen() {
         <TextNunitoSans style={styles.textError}></TextNunitoSans>
 
         <EspecieList especies={especies} />
+
+
+        <ConfirmModal
+          visible={showLogoutModal}
+          title="Cerrar sesión"
+          message="¿Estás seguro de que deseas cerrar sesión?"
+          confirmLabel="Cerrar sesión"
+          cancelLabel="Cancelar"
+          onConfirm={handleLogout}
+          onCancel={() => setShowLogoutModal(false)}
+        />
       </View>
     </SafeAreaView>
   );
@@ -94,12 +122,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    paddingTop:20,
+    paddingTop: 20,
     fontSize: 20,
     fontWeight: "bold",
     color: themeColors.textBase,
   },
   titleContainer: { gap: 35 },
+  titleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   textError: {
     color: "red",
   },
