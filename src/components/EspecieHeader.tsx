@@ -33,11 +33,17 @@ export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
     >
 
       <View style={styles.IconBackContainer}>
-        <View style={styles.IconBackCircleContainer}>
-          <Pressable onPress={back}>
-            <Ionicons name="chevron-back-outline" size={30} color="black" />
-          </Pressable>
-        </View>
+        <Pressable
+          style={styles.IconBackCircleContainer}
+          onPress={back}
+          hitSlop={15}
+        >
+          <Ionicons
+            name="chevron-back-outline"
+            size={30}
+            color="black"
+          />
+        </Pressable>
       </View>
 
 
@@ -95,7 +101,9 @@ const styles = StyleSheet.create({
   },
   IconBackContainer: {
     top: 30,
-    padding: 15, //distancia entre este contenedor y sus hijos
+    padding: 15,
+    zIndex: 10,
+    elevation: 10,
   },
   IconBackCircleContainer: {
     backgroundColor: "white",
