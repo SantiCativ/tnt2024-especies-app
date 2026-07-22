@@ -3,7 +3,7 @@ import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useEspecie } from "@/src/services/especies.hooks";
 import { themeStyles } from "@/src/theme/theme";
 import { useLocalSearchParams } from "expo-router"; //biblioteca para recuperar los parámetros de búsqueda para el contexto de la ruta actual.
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { EspecieHeader } from "@/src/components/EspecieHeader";
 
 function parseEspecieId(especieId: string | string[] | undefined) {
@@ -60,10 +60,14 @@ function EspecieDetailScreen({ spId }: { spId: number }) {
   }
 
   return (
-    <View style={themeStyles.screen}>
+    <ScrollView
+      style={themeStyles.screen}
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
       <EspecieHeader especie={especie} />
       <EspecieDetail especie={especie} />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -73,5 +77,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  ContainerDetails: {},
+  scrollContent: {
+    paddingBottom: 40,
+  },
 });

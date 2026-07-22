@@ -1,5 +1,5 @@
 import { TEspecie } from "../services/especies.service";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { BotonReportar } from "./BotonReportar";
 
@@ -61,7 +61,7 @@ export const EspecieDetail: React.FC<{ especie: TEspecie }> = ({ especie }) => {
 
 const styles = StyleSheet.create({
   ContainerDetail: {
-    height: Dimensions.get("window").height / 2,
+    paddingBottom: 25,
     top: -20,
     backgroundColor: "black",
     margin: 15,
@@ -70,7 +70,9 @@ const styles = StyleSheet.create({
   ContainerTable: {
     flexDirection: "row",
     gap: 15,
-    padding: 50,
+    paddingHorizontal: 30,
+    paddingTop: 30,
+    paddingBottom: 20,
   },
   td: { gap: 15 },
   tr: { gap: 15 },
