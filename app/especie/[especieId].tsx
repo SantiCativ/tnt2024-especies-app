@@ -1,4 +1,5 @@
 import { EspecieDetail } from "@/src/components/EspecieDetail";
+import { ProgressLoading } from "@/src/components/ProgressLoading";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useEspecie } from "@/src/services/especies.hooks";
 import { themeStyles } from "@/src/theme/theme";
@@ -38,7 +39,7 @@ function EspecieDetailScreen({ spId }: { spId: number }) {
   if (isFetching) {
     return (
       <View style={styles.container}>
-        <TextNunitoSans>Cargando...</TextNunitoSans>
+        <ProgressLoading text="Cargando especie..." />
       </View>
     );
   }

@@ -1,6 +1,7 @@
 import { ConfirmModal } from "@/src/components/ConfirmModal";
 import { EspecieList } from "@/src/components/EspecieList";
 import { HomeFilter } from "@/src/components/HomeFilter";
+import { ProgressLoading } from "@/src/components/ProgressLoading";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useFilteredEspecies } from "@/src/services/especies.hooks";
 import { TReino, TReinoEnum } from "@/src/services/especies.service";
@@ -81,20 +82,20 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {isFetching && <TextNunitoSans>Cargando...</TextNunitoSans>}
-        {!isFetching && isError && (
-          <View>
+        {isFetching ? (
+          <View style={styles.centerContainer}>
+            <ProgressLoading text="Cargando especies..." />
+          </View>
+        ) : isError ? (
+          <View style={styles.centerContainer}>
             <TextNunitoSans style={styles.textError}>
               Error al cargar las especies
             </TextNunitoSans>
-            <Button title="Reintentar" onPress={handleReintentar} />
+            <Button title="Reintentar" onPress={handleReintentar} color={themeColors.primary} />
           </View>
+        ) : (
+          <EspecieList especies={especies} />
         )}
-
-        <TextNunitoSans style={styles.textError}></TextNunitoSans>
-
-        <EspecieList especies={especies} />
-
 
         <ConfirmModal
           visible={showLogoutModal}
@@ -135,5 +136,11 @@ const styles = StyleSheet.create({
   },
   textError: {
     color: "red",
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12,
   },
 });
