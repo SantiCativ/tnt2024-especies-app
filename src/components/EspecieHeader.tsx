@@ -3,17 +3,24 @@ import {
   ImageBackground,
   StyleSheet,
   View,
-  TouchableOpacity,
+  Pressable,
   Dimensions,
 } from "react-native";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import {useRouter} from "expo-router"
+import { useRouter } from "expo-router"
+import { useLikes } from "../hooks/useLikes";
 
 export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
-  const {back} = useRouter();
+  const { back } = useRouter();
+  const {
+    likesCount,
+    hasLiked,
+    toggleLike
+  } = useLikes(especie.sp_id);
+
   return (
     <ImageBackground
       source={
@@ -24,20 +31,34 @@ export const EspecieHeader: React.FC<{ especie: TEspecie }> = ({ especie }) => {
       resizeMode="cover"
       style={styles.image}
     >
-      
-        <View style={styles.IconBackContainer}>
-          <View style={styles.IconBackCircleContainer}>
-          <TouchableOpacity onPress={back}>
+
+      <View style={styles.IconBackContainer}>
+        <View style={styles.IconBackCircleContainer}>
+          <Pressable onPress={back}>
             <Ionicons name="chevron-back-outline" size={30} color="black" />
-            </TouchableOpacity>
-          </View>
+          </Pressable>
         </View>
-     
+      </View>
+
 
       <View style={styles.absoluteContainer}>
-        <View style={styles.IconLikeContainer}>
-          <FontAwesome name="heart" size={24} color="#EF5DA8" />
-        </View>
+        <Pressable
+          style={styles.IconLikeContainer}
+          onPress={toggleLike}
+          hitSlop={10}
+        >
+          <FontAwesome
+            name="heart"
+            size={24}
+            color={hasLiked ? "#EF5DA8" : "#C8C8C8"}
+          />
+
+
+          <TextNunitoSans style={{ color: "black" }}>
+            {likesCount ?? ""}
+          </TextNunitoSans>
+
+        </Pressable>
       </View>
 
       <LinearGradient
@@ -64,7 +85,7 @@ const styles = StyleSheet.create({
     margin: 15,
     justifyContent: "center",
     borderRadius: 20,
-    shadowRadius:20,
+    shadowRadius: 20,
   },
   linearGradient: {
     height: Dimensions.get("window").height / 2,
@@ -85,10 +106,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   absoluteContainer: {
-    position: "absolute", // nos da la posicion absoluta, en este caso la de imagen, de esta manera con top y right, controlamos esas posiciones TOMANDO COMO REFERENCIA LA IMAGEN
+    position: "absolute",
     top: 0,
     right: 0,
-    padding: 15, //distancia entre este contenedor y sus hijos
+    padding: 15,
+    zIndex: 10,
+    elevation: 10,
   },
   IconLikeContainer: {
     flexDirection: "row",
@@ -97,7 +120,8 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: "white",
     width: 90,
-    height: 38,
+    minHeight: 44,
+    paddingHorizontal: 12,
     borderRadius: 20,
   },
   textContainer: {
