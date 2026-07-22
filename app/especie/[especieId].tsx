@@ -24,7 +24,7 @@ export default function EspecieShowScreen() {
 
   if (spId === null) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, themeStyles.screen]}>
         <TextNunitoSans>El id de la especie no es valido</TextNunitoSans>
       </View>
     );
@@ -38,7 +38,7 @@ function EspecieDetailScreen({ spId }: { spId: number }) {
 
   if (isFetching) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, themeStyles.screen]}>
         <ProgressLoading text="Cargando especie..." />
       </View>
     );
@@ -46,7 +46,7 @@ function EspecieDetailScreen({ spId }: { spId: number }) {
 
   if (isError) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, themeStyles.screen]}>
         <TextNunitoSans>ERROR!</TextNunitoSans>
       </View>
     );
@@ -54,7 +54,7 @@ function EspecieDetailScreen({ spId }: { spId: number }) {
 
   if (!especie) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, themeStyles.screen]}>
         <TextNunitoSans>La especie no existe</TextNunitoSans>
       </View>
     );
