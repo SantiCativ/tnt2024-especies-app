@@ -67,16 +67,16 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.filtersContainer}>
-            <Pressable onPress={handleRemoveFilter}>
+            <Pressable onPress={handleRemoveFilter} hitSlop={10}>
               <HomeFilter filter={filter} name={null} />
             </Pressable>
-            <Pressable onPress={handleFilter(TReinoEnum.ANIMALIA)}>
+            <Pressable onPress={handleFilter(TReinoEnum.ANIMALIA)} hitSlop={10}>
               <HomeFilter filter={filter} name={TReinoEnum.ANIMALIA} />
             </Pressable>
-            <Pressable onPress={handleFilter(TReinoEnum.FUNGI)}>
+            <Pressable onPress={handleFilter(TReinoEnum.FUNGI)} hitSlop={10}>
               <HomeFilter filter={filter} name={TReinoEnum.FUNGI} />
             </Pressable>
-            <Pressable onPress={handleFilter(TReinoEnum.PLANTAE)}>
+            <Pressable onPress={handleFilter(TReinoEnum.PLANTAE)} hitSlop={10}>
               <HomeFilter filter={filter} name={TReinoEnum.PLANTAE} />
             </Pressable>
           </View>
