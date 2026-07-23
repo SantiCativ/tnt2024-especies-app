@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   filterCategorySelected: {
     color:"white",
-    borderBottomWidth: 1, // Ancho del borde inferior
+    borderBottomWidth: 2, // Ancho del borde inferior
     borderBottomColor: '#BEDE61', // Color del borde inferior
     
   },
