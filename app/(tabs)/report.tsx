@@ -1,6 +1,6 @@
 import { ReportForm } from "@/src/components/report/ReportForm";
 import { useAuth } from "@/src/context/AuthContext";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { themeColors } from "@/src/theme/theme";
 import { useEffect } from "react";
@@ -34,17 +34,18 @@ export default function ReportScreen() {
     <ReportForm
       initialSpId={params.reportSpId ?? null}
       onSubmitSuccess={() => {
-        console.log("Reporte enviado con exito");
+        Alert.alert("¡Éxito!", "El reporte de avistaje ha sido enviado con éxito.");
       }}
       onSubmitError={(message) => {
-        console.error(
+        Alert.alert(
           "Error al enviar el reporte",
-          message
+          message || "Inténtelo de nuevo más tarde."
         );
       }}
     />
   );
 }
+
 
 const styles = StyleSheet.create({
   loadingContainer: {
