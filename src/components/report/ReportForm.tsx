@@ -1,5 +1,12 @@
 import { FC } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CustomButton } from "@/src/components/CustomButton";
 import { CustomTextInput } from "@/src/components/CustomTextInput";
@@ -33,98 +40,108 @@ export const ReportForm: FC<ReportFormProps> = ({
     Platform.select({ ios: "numbers-and-punctuation", default: "numeric" });
 
   return (
-    <ScrollView
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={themeStyles.screen}
-      contentContainerStyle={[
-        styles.container,
-        { paddingTop: 10 + insets.top },
-      ]}
     >
-      <TextNunitoSans style={styles.title}>Reportar avistaje</TextNunitoSans>
+      <ScrollView
+        style={themeStyles.screen}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={[
+          styles.container,
+          { paddingTop: 10 + insets.top },
+        ]}
+      >
+        <TextNunitoSans style={styles.title}>Reportar avistaje</TextNunitoSans>
 
-      <EspecieSelector
-        spId={form.spId}
-        setSpId={form.setSpId}
-        inputStyle={form.errors.includes("spId") ? styles.error : null}
-      />
-
-      <ReportLocation
-        onLocationSelected={({ latitud, longitud }) => {
-          form.setLocation(latitud, longitud);
-        }}
-      />
-
-      <View style={styles.rowContainer}>
-        <CustomTextInput
-          placeholder="Latitud"
-          onChangeText={form.setLatitud}
-          value={form.latitud}
-          style={[
-            styles.flex1,
-            form.errors.includes("latitud") ? styles.error : null,
-          ]}
-          keyboardType={numberInputType}
-          returnKeyType="done"
+        <EspecieSelector
+          spId={form.spId}
+          setSpId={form.setSpId}
+          inputStyle={form.errors.includes("spId") ? styles.error : null}
         />
 
-        <CustomTextInput
-          placeholder="Longitud"
-          onChangeText={form.setLongitud}
-          value={form.longitud}
-          style={[
-            styles.flex1,
-            form.errors.includes("longitud") ? styles.error : null,
-          ]}
-          keyboardType={numberInputType}
-          returnKeyType="done"
-        />
-      </View>
-
-      <View style={styles.rowContainer}>
-        <DateTimeModalInput
-          placeholder="Fecha"
-          display="inline"
-          mode="date"
-          date={form.fecha}
-          onConfirm={form.setFecha}
-          containerStyle={styles.flex1}
-          inputStyle={form.errors.includes("fecha") ? styles.error : null}
+        <ReportLocation
+          onLocationSelected={({ latitud, longitud }) => {
+            form.setLocation(latitud, longitud);
+          }}
         />
 
-        <DateTimeModalInput
-          placeholder="Hora"
-          display="inline"
-          mode="time"
-          date={form.hora}
-          onConfirm={form.setHora}
-          containerStyle={styles.flex1}
-          inputStyle={form.errors.includes("hora") ? styles.error : null}
+        <View style={styles.rowContainer}>
+          <CustomTextInput
+            placeholder="Latitud"
+            onChangeText={form.setLatitud}
+            value={form.latitud}
+            style={[
+              styles.flex1,
+              form.errors.includes("latitud") ? styles.error : null,
+            ]}
+            keyboardType={numberInputType}
+            returnKeyType="done"
+          />
+
+          <CustomTextInput
+            placeholder="Longitud"
+            onChangeText={form.setLongitud}
+            value={form.longitud}
+            style={[
+              styles.flex1,
+              form.errors.includes("longitud") ? styles.error : null,
+            ]}
+            keyboardType={numberInputType}
+            returnKeyType="done"
+          />
+        </View>
+
+        <View style={styles.rowContainer}>
+          <DateTimeModalInput
+            placeholder="Fecha"
+            display="inline"
+            mode="date"
+            date={form.fecha}
+            onConfirm={form.setFecha}
+            containerStyle={styles.flex1}
+            inputStyle={form.errors.includes("fecha") ? styles.error : null}
+          />
+
+          <DateTimeModalInput
+            placeholder="Hora"
+            display="inline"
+            mode="time"
+            date={form.hora}
+            onConfirm={form.setHora}
+            containerStyle={styles.flex1}
+            inputStyle={form.errors.includes("hora") ? styles.error : null}
+          />
+        </View>
+
+        <ReportDescription
+          onChangeText={form.setDescripcion}
+          value={form.descripcion}
+          inputStyle={form.errors.includes("descripcion") ? styles.error : null}
         />
-      </View>
 
-      <ReportDescription
-        onChangeText={form.setDescripcion}
-        value={form.descripcion}
-        inputStyle={form.errors.includes("descripcion") ? styles.error : null}
-      />
+        <ReportImagePicker
+          image={form.imagen}
+          onError={form.addError}
+          onImageChange={form.setImagen}
+        />
 
-      <ReportImagePicker
-        image={form.imagen}
-        onError={form.addError}
-        onImageChange={form.setImagen}
-      />
-
-      <Pressable onPress={form.submit}>
-        <CustomButton label="Reportar avistaje" />
-      </Pressable>
-    </ScrollView>
+        <Pressable onPress={form.submit} disabled={form.isSubmitting}>
+          <CustomButton
+            label="Reportar avistaje"
+            isLoading={form.isSubmitting}
+            disabled={form.isSubmitting}
+          />
+        </Pressable>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 25,
-    paddingBottom: 10,
+    paddingBottom: 20,
     gap: 16,
   },
   title: {
@@ -142,3 +159,4 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
 });
+
