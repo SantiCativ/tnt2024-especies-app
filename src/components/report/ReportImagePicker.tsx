@@ -1,9 +1,10 @@
-import { FC } from "react";
-import { Foundation, FontAwesome6 } from "@expo/vector-icons";
+import { FC, useState } from "react";
+import { Foundation, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { CameraView } from "expo-camera";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import {
+  ActivityIndicator,
   Modal,
   Pressable,
   StyleSheet,
@@ -12,6 +13,7 @@ import {
 } from "react-native";
 import { CustomButton } from "@/src/components/CustomButton";
 import { useCamera } from "@/src/hooks/useCamera";
+import { themeColors } from "@/src/theme/theme";
 
 type ReportImagePickerProps = {
   image: string | null;
@@ -26,9 +28,12 @@ export const ReportImagePicker: FC<ReportImagePickerProps> = ({
 }) => {
   const { width } = useWindowDimensions();
   const height = Math.round((width * 4) / 3);
+  const [isPicking, setIsPicking] = useState(false);
+
   const {
     cameraRef,
     closeCamera,
+    isCapturing,
     openCamera,
     permission,
     requestCameraAccess,
@@ -37,50 +42,81 @@ export const ReportImagePicker: FC<ReportImagePickerProps> = ({
   } = useCamera();
 
   const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (isPicking) return;
+    setIsPicking(true);
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (status !== "granted") {
-      onError("Permiso de acceso a la galería denegado");
-      return;
-    }
+      if (status !== "granted") {
+        onError("Permiso de acceso a la galería denegado");
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      base64: true,
-      quality: 1,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        base64: true,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      onImageChange(
-        result.assets[0].base64
-          ? `data:image/jpeg;base64,${result.assets[0].base64}`
-          : null
-      );
+      if (!result.canceled && result.assets?.[0]) {
+        onImageChange(
+          result.assets[0].base64
+            ? `data:image/jpeg;base64,${result.assets[0].base64}`
+            : result.assets[0].uri
+        );
+      }
+    } catch (e) {
+      onError("Error al seleccionar la imagen de la galería");
+    } finally {
+      setIsPicking(false);
     }
   };
 
   const handleTakePicture = async () => {
     const photoUri = await takePicture();
-    onImageChange(photoUri);
+    if (photoUri) {
+      onImageChange(photoUri);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    onImageChange(null);
   };
 
   return (
     <View style={styles.imgCaptureContainer}>
-      <Image
-        source={image}
-        placeholder={require("@/assets/images/placeholder.png")}
-        placeholderContentFit="cover"
-        style={styles.imagePreview}
-      />
-      <View>
+      <View style={styles.previewWrapper}>
+        <Image
+          source={image}
+          placeholder={require("@/assets/images/placeholder.png")}
+          placeholderContentFit="cover"
+          style={styles.imagePreview}
+        />
+        {image && (
+          <Pressable style={styles.removeImageBadge} onPress={handleRemoveImage}>
+            <MaterialIcons name="close" size={18} color="white" />
+          </Pressable>
+        )}
+      </View>
+      <View style={styles.actionIconsContainer}>
         <Foundation
           name="camera"
           size={40}
           color="white"
           onPress={openCamera}
         />
-        <Foundation name="photo" size={40} color="white" onPress={pickImage} />
+        {isPicking ? (
+          <ActivityIndicator size="small" color={themeColors.primary} />
+        ) : (
+          <Foundation
+            name="photo"
+            size={40}
+            color="white"
+            onPress={pickImage}
+          />
+        )}
       </View>
 
       <Modal
@@ -89,36 +125,34 @@ export const ReportImagePicker: FC<ReportImagePickerProps> = ({
         onRequestClose={closeCamera}
         statusBarTranslucent
       >
-        <Pressable style={styles.cameraCloseContainer} onPress={closeCamera}>
-          <Foundation
-            name="x-circle"
-            size={50}
-            color="white"
-            onPress={closeCamera}
-            style={styles.cameraCloseBtn}
-          />
+        <View style={styles.cameraCloseContainer}>
+          <Pressable style={styles.cameraCloseBtn} onPress={closeCamera}>
+            <Foundation name="x-circle" size={50} color="white" />
+          </Pressable>
           <View style={styles.cameraContainer}>
-            <Pressable>
-              <CameraView
-                ref={cameraRef}
-                style={[styles.camera, { width, height }]}
-                animateShutter={false}
-              />
-            </Pressable>
+            <CameraView
+              ref={cameraRef}
+              style={[styles.camera, { width, height }]}
+              animateShutter={false}
+            />
             {permission?.granted ? (
-              <FontAwesome6
-                name="dot-circle"
-                size={50}
-                color="white"
-                onPress={handleTakePicture}
-              />
+              isCapturing ? (
+                <ActivityIndicator size="large" color="white" />
+              ) : (
+                <FontAwesome6
+                  name="dot-circle"
+                  size={50}
+                  color="white"
+                  onPress={handleTakePicture}
+                />
+              )
             ) : (
               <Pressable onPress={requestCameraAccess}>
-                <CustomButton label="Permitir acceso a la camara" />
+                <CustomButton label="Permitir acceso a la cámara" />
               </Pressable>
             )}
           </View>
-        </Pressable>
+        </View>
       </Modal>
     </View>
   );
@@ -128,29 +162,59 @@ const styles = StyleSheet.create({
   imgCaptureContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 10,
+    alignItems: "center",
+    gap: 16,
+  },
+  previewWrapper: {
+    position: "relative",
   },
   imagePreview: {
     width: 100,
     height: 100,
+    borderRadius: 12,
+  },
+  removeImageBadge: {
+    position: "absolute",
+    top: -8,
+    right: -8,
+    backgroundColor: "rgba(239, 68, 68, 0.9)",
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  actionIconsContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12,
   },
   cameraCloseContainer: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    justifyContent: "space-between",
+    paddingBottom: 40,
   },
   cameraCloseBtn: {
     alignSelf: "flex-end",
-    marginTop: 30,
+    marginTop: 40,
     marginRight: 20,
   },
   cameraContainer: {
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
-    gap: 30,
+    gap: 20,
   },
   camera: {
     aspectRatio: 3 / 4,
     overflow: "hidden",
+    borderRadius: 12,
   },
 });
+

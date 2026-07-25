@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 
 export function useCamera() {
   const [showCamera, setShowCamera] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView | null>(null);
 
@@ -26,14 +27,24 @@ export function useCamera() {
   };
 
   const takePicture = async () => {
-    const photo = await cameraRef.current?.takePictureAsync();
-    closeCamera();
-    return photo?.uri ?? null;
+    if (isCapturing) return null;
+    setIsCapturing(true);
+    try {
+      const photo = await cameraRef.current?.takePictureAsync();
+      closeCamera();
+      return photo?.uri ?? null;
+    } catch (e) {
+      console.error("Error al tomar fotografía", e);
+      return null;
+    } finally {
+      setIsCapturing(false);
+    }
   };
 
   return {
     cameraRef,
     closeCamera,
+    isCapturing,
     openCamera,
     permission,
     requestCameraAccess,
@@ -41,3 +52,4 @@ export function useCamera() {
     takePicture,
   };
 }
+
