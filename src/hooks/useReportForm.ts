@@ -28,6 +28,7 @@ export function useReportForm({
   const [descripcion, setDescripcion] = useState("");
   const [imagen, setImagen] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (initialSpId) {
@@ -52,6 +53,7 @@ export function useReportForm({
     setHora(new Date());
     setDescripcion("");
     setImagen(null);
+    setErrors([]);
   };
 
   const validate = () => {
@@ -93,6 +95,8 @@ export function useReportForm({
   };
 
   const submit = async () => {
+    if (isSubmitting) return;
+
     const errorsArr = validate();
     setErrors(errorsArr);
 
@@ -106,14 +110,16 @@ export function useReportForm({
       return;
     }
 
+    setIsSubmitting(true);
     try {
       await sendReporte(reporte);
       onSubmitSuccess?.();
+      resetForm();
     } catch (error) {
       onSubmitError?.(getErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
     }
-
-    resetForm();
   };
 
   return {
@@ -123,6 +129,7 @@ export function useReportForm({
     fecha,
     hora,
     imagen,
+    isSubmitting,
     latitud,
     longitud,
     setDescripcion,
@@ -137,3 +144,4 @@ export function useReportForm({
     submit,
   };
 }
+
