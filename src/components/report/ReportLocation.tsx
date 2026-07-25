@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { ImageBackground } from "expo-image";
-import { Pressable, StyleSheet } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { themeColors } from "@/src/theme/theme";
 import {
@@ -16,12 +16,18 @@ export const ReportLocation: FC<ReportLocationProps> = ({
   onLocationSelected,
 }) => {
   const { getCurrentCoordinates } = useLocation();
+  const [loading, setLoading] = useState(false);
 
   const handlePress = async () => {
-    const coords = await getCurrentCoordinates();
-
-    if (coords) {
-      onLocationSelected(coords);
+    if (loading) return;
+    setLoading(true);
+    try {
+      const coords = await getCurrentCoordinates();
+      if (coords) {
+        onLocationSelected(coords);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,8 +36,16 @@ export const ReportLocation: FC<ReportLocationProps> = ({
       source={require("@/assets/images/map.png")}
       style={styles.map}
     >
-      <Pressable style={styles.locationBtn} onPress={handlePress}>
-        <MaterialIcons name="my-location" size={24} color="black" />
+      <Pressable
+        style={[styles.locationBtn, loading && styles.disabledBtn]}
+        onPress={handlePress}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color="black" />
+        ) : (
+          <MaterialIcons name="my-location" size={24} color="black" />
+        )}
       </Pressable>
     </ImageBackground>
   );
@@ -43,6 +57,8 @@ const styles = StyleSheet.create({
     height: 200,
     justifyContent: "flex-end",
     alignItems: "flex-end",
+    borderRadius: 16,
+    overflow: "hidden",
   },
   locationBtn: {
     width: 50,
@@ -62,4 +78,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  disabledBtn: {
+    opacity: 0.7,
+  },
 });
+
