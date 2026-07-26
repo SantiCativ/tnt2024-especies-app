@@ -1,13 +1,16 @@
 import {
   ActivityIndicator,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
+import { AuthDivider } from "@/src/components/auth/AuthDivider";
+import { AuthFormInput } from "@/src/components/auth/AuthFormInput";
+import { AuthTerms } from "@/src/components/auth/AuthTerms";
+import { authStyles } from "@/src/components/auth/authStyles";
 import { TextNunitoSans } from "@/src/components/TextNunitoSans";
 import { useRegisterForm } from "@/src/hooks/useRegisterForm";
 import { themeColors } from "@/src/theme/theme";
@@ -48,135 +51,62 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
   };
 
   return (
-    <View style={styles.card}>
+    <View style={authStyles.card}>
       {/* Encabezado */}
-      <View style={styles.header}>
+      <View style={authStyles.header}>
         <MaterialCommunityIcons
           name="leaf"
           size={28}
           color={themeColors.primary}
-          style={styles.headerIcon}
+          style={authStyles.headerIcon}
         />
 
-        <TextNunitoSans style={styles.title}>
+        <TextNunitoSans style={authStyles.title}>
           Crear cuenta
         </TextNunitoSans>
       </View>
 
-      <TextNunitoSans style={styles.subtitle}>
+      <TextNunitoSans style={authStyles.subtitle}>
         Unite a la comunidad y comenzá{"\n"}a registrar la biodiversidad.
       </TextNunitoSans>
 
       {/* Correo electrónico */}
-      <TextNunitoSans style={styles.inputLabel}>
-        Correo electrónico
-      </TextNunitoSans>
-
-      <View style={styles.inputContainer}>
-        <Ionicons
-          name="mail-outline"
-          size={20}
-          color="#888"
-          style={styles.inputIcon}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="ejemplo@correo.com"
-          placeholderTextColor="#666"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-          editable={!isLoading}
-        />
-      </View>
+      <AuthFormInput
+        label="Correo electrónico"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="ejemplo@correo.com"
+        iconName="mail-outline"
+        keyboardType="email-address"
+        disabled={isLoading}
+      />
 
       {/* Contraseña */}
-      <TextNunitoSans style={styles.inputLabel}>
-        Contraseña
-      </TextNunitoSans>
-
-      <View style={styles.inputContainer}>
-        <Ionicons
-          name="lock-closed-outline"
-          size={20}
-          color="#888"
-          style={styles.inputIcon}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="••••••••"
-          placeholderTextColor="#666"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          autoCapitalize="none"
-          autoCorrect={false}
-          editable={!isLoading}
-        />
-
-        <TouchableOpacity
-          onPress={togglePasswordVisibility}
-          style={styles.eyeButton}
-          disabled={isLoading}
-        >
-          <Ionicons
-            name={
-              showPassword
-                ? "eye-outline"
-                : "eye-off-outline"
-            }
-            size={22}
-            color="#888"
-          />
-        </TouchableOpacity>
-      </View>
+      <AuthFormInput
+        label="Contraseña"
+        value={password}
+        onChangeText={setPassword}
+        placeholder="••••••••"
+        iconName="lock-closed-outline"
+        secureTextEntry={!showPassword}
+        showPassword={showPassword}
+        onTogglePassword={togglePasswordVisibility}
+        disabled={isLoading}
+      />
 
       {/* Confirmar contraseña */}
-      <TextNunitoSans style={styles.inputLabel}>
-        Confirmar contraseña
-      </TextNunitoSans>
-
-      <View style={styles.inputContainer}>
-        <Ionicons
-          name="lock-closed-outline"
-          size={20}
-          color="#888"
-          style={styles.inputIcon}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="••••••••"
-          placeholderTextColor="#666"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={!showConfirmPassword}
-          autoCapitalize="none"
-          autoCorrect={false}
-          editable={!isLoading}
-          onSubmitEditing={handleSubmit}
-        />
-
-        <TouchableOpacity
-          onPress={toggleConfirmPasswordVisibility}
-          style={styles.eyeButton}
-          disabled={isLoading}
-        >
-          <Ionicons
-            name={
-              showConfirmPassword
-                ? "eye-outline"
-                : "eye-off-outline"
-            }
-            size={22}
-            color="#888"
-          />
-        </TouchableOpacity>
-      </View>
+      <AuthFormInput
+        label="Confirmar contraseña"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        placeholder="••••••••"
+        iconName="lock-closed-outline"
+        secureTextEntry={!showConfirmPassword}
+        showPassword={showConfirmPassword}
+        onTogglePassword={toggleConfirmPasswordVisibility}
+        disabled={isLoading}
+        onSubmitEditing={handleSubmit}
+      />
 
       {/* Requisitos de contraseña */}
       <View style={styles.requirementsContainer}>
@@ -236,8 +166,8 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
       {/* Crear cuenta */}
       <TouchableOpacity
         style={[
-          styles.submitButton,
-          isLoading && styles.submitButtonDisabled,
+          authStyles.submitButton,
+          isLoading && authStyles.submitButtonDisabled,
         ]}
         onPress={handleSubmit}
         disabled={isLoading}
@@ -249,26 +179,17 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
             color="#13140D"
           />
         ) : (
-          <TextNunitoSans style={styles.submitButtonText}>
+          <TextNunitoSans style={authStyles.submitButtonText}>
             Crear cuenta
           </TextNunitoSans>
         )}
       </TouchableOpacity>
 
-      {/* Separador */}
-      <View style={styles.dividerContainer}>
-        <View style={styles.dividerLine} />
-
-        <TextNunitoSans style={styles.dividerText}>
-          o
-        </TextNunitoSans>
-
-        <View style={styles.dividerLine} />
-      </View>
+      <AuthDivider />
 
       {/* Ya tengo cuenta */}
       <TouchableOpacity
-        style={styles.loginButton}
+        style={authStyles.secondaryButton}
         activeOpacity={0.8}
         disabled={isLoading}
         onPress={handleGoToLogin}
@@ -277,111 +198,20 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
           name="person-outline"
           size={20}
           color={themeColors.primary}
-          style={styles.loginButtonIcon}
+          style={authStyles.secondaryButtonIcon}
         />
 
-        <TextNunitoSans style={styles.loginButtonText}>
+        <TextNunitoSans style={authStyles.secondaryButtonText}>
           Ya tengo cuenta
         </TextNunitoSans>
       </TouchableOpacity>
 
-      {/* Términos y condiciones */}
-      <View style={styles.termsContainer}>
-        <TextNunitoSans style={styles.termsText}>
-          Al continuar, aceptás nuestros
-        </TextNunitoSans>
-
-        <View style={styles.termsLinks}>
-          <TouchableOpacity>
-            <TextNunitoSans style={styles.termsLink}>
-              Términos de uso
-            </TextNunitoSans>
-          </TouchableOpacity>
-
-          <TextNunitoSans style={styles.termsText}>
-            {" "}y{" "}
-          </TextNunitoSans>
-
-          <TouchableOpacity>
-            <TextNunitoSans style={styles.termsLink}>
-              Política de privacidad
-            </TextNunitoSans>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <AuthTerms />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-    backgroundColor: "#1C1D15",
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    marginTop: -24,
-    paddingHorizontal: 28,
-    paddingTop: 32,
-    paddingBottom: 30,
-  },
-
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-
-  headerIcon: {
-    marginRight: 10,
-  },
-
-  title: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: "white",
-  },
-
-  subtitle: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.6)",
-    lineHeight: 20,
-    marginBottom: 24,
-    fontWeight: "400",
-  },
-
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: themeColors.primary,
-    marginBottom: 8,
-  },
-
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#2A2B22",
-    borderRadius: 14,
-    marginBottom: 16,
-    height: 52,
-    paddingHorizontal: 16,
-  },
-
-  inputIcon: {
-    marginRight: 12,
-  },
-
-  input: {
-    flex: 1,
-    color: "white",
-    fontSize: 15,
-    fontFamily: "NunitoSans_10pt_Regular",
-    height: "100%",
-  },
-
-  eyeButton: {
-    padding: 4,
-  },
-
   requirementsContainer: {
     marginBottom: 20,
     gap: 6,
@@ -408,86 +238,5 @@ const styles = StyleSheet.create({
 
   requirementMet: {
     color: "rgba(255,255,255,0.8)",
-  },
-
-  submitButton: {
-    backgroundColor: themeColors.primary,
-    height: 52,
-    borderRadius: 26,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  submitButtonDisabled: {
-    opacity: 0.7,
-  },
-
-  submitButtonText: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#13140D",
-  },
-
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 20,
-  },
-
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.12)",
-  },
-
-  dividerText: {
-    color: "rgba(255,255,255,0.4)",
-    fontSize: 14,
-    marginHorizontal: 16,
-    fontWeight: "400",
-  },
-
-  loginButton: {
-    flexDirection: "row",
-    height: 52,
-    borderRadius: 26,
-    borderWidth: 1.5,
-    borderColor: themeColors.primary,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
-  },
-
-  loginButtonIcon: {
-    marginRight: 8,
-  },
-
-  loginButtonText: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: themeColors.primary,
-  },
-
-  termsContainer: {
-    alignItems: "center",
-    marginTop: 24,
-  },
-
-  termsText: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.5)",
-    fontWeight: "400",
-  },
-
-  termsLinks: {
-    flexDirection: "row",
-    marginTop: 2,
-  },
-
-  termsLink: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.7)",
-    fontWeight: "600",
-    textDecorationLine: "underline",
   },
 });
