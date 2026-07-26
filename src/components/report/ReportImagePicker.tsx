@@ -1,8 +1,7 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Foundation, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { CameraView } from "expo-camera";
 import { Image } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
 import {
   ActivityIndicator,
   Modal,
@@ -13,6 +12,7 @@ import {
 } from "react-native";
 import { CustomButton } from "@/src/components/CustomButton";
 import { useCamera } from "@/src/hooks/useCamera";
+import { useGallery } from "@/src/hooks/useGallery";
 import { themeColors } from "@/src/theme/theme";
 
 type ReportImagePickerProps = {
@@ -28,7 +28,6 @@ export const ReportImagePicker: FC<ReportImagePickerProps> = ({
 }) => {
   const { width } = useWindowDimensions();
   const height = Math.round((width * 4) / 3);
-  const [isPicking, setIsPicking] = useState(false);
 
   const {
     cameraRef,
@@ -41,36 +40,16 @@ export const ReportImagePicker: FC<ReportImagePickerProps> = ({
     takePicture,
   } = useCamera();
 
-  const pickImage = async () => {
-    if (isPicking) return;
-    setIsPicking(true);
+  const { isPicking, pickImage } = useGallery();
+
+  const handlePickImage = async () => {
     try {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (status !== "granted") {
-        onError("Permiso de acceso a la galería denegado");
-        return;
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        base64: true,
-        quality: 1,
-      });
-
-      if (!result.canceled && result.assets?.[0]) {
-        onImageChange(
-          result.assets[0].base64
-            ? `data:image/jpeg;base64,${result.assets[0].base64}`
-            : result.assets[0].uri
-        );
+      const imageUri = await pickImage();
+      if (imageUri) {
+        onImageChange(imageUri);
       }
     } catch (e) {
       onError("Error al seleccionar la imagen de la galería");
-    } finally {
-      setIsPicking(false);
     }
   };
 
@@ -114,7 +93,7 @@ export const ReportImagePicker: FC<ReportImagePickerProps> = ({
             name="photo"
             size={40}
             color="white"
-            onPress={pickImage}
+            onPress={handlePickImage}
           />
         )}
       </View>
@@ -217,4 +196,5 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
 });
+
 
